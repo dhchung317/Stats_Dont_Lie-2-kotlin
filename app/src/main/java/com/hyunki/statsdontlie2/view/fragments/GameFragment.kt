@@ -11,20 +11,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.HasDefaultViewModelProviderFactory
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.hyunki.statsdontlie2.Animations
-import com.hyunki.statsdontlie2.OnFragmentInteractionListener
+import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
 import com.hyunki.statsdontlie2.R
 import com.hyunki.statsdontlie2.constants.BDLAppConstants
 import com.hyunki.statsdontlie2.model.PlayerAverageModel
 import com.hyunki.statsdontlie2.utils.GameJudger
 import com.hyunki.statsdontlie2.utils.PlayerUtil
 import com.hyunki.statsdontlie2.utils.RandomNumberGenerator
-import com.hyunki.statsdontlie2.viewmodel.NewViewModel
+import com.hyunki.statsdontlie2.view.NewViewModel
+import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
+import javax.inject.Inject
 
-class GameFragment : Fragment() {
+class GameFragment @Inject constructor(private val viewModelProviderFactory: ViewModelProviderFactory) : Fragment() {
     private lateinit var listener: OnFragmentInteractionListener
 
     private lateinit var playerOneCardView: CardView
@@ -112,14 +116,16 @@ class GameFragment : Fragment() {
 //                correct.clearAnimation();
 //                handler.removeCallbacksAndMessages(null);
 //                handler2.removeCallbacksAndMessages(null);
-                listener.displayResultFragment(playerCorrectGuesses, playerInCorrectGuesses)
+                //todo listener to set results in viewmodel
+                listener.setResultsDataFromGameFragment(playerCorrectGuesses, playerInCorrectGuesses)
+                listener.displayResultFragment()
             }
         }
         countDownTimer.start()
     }
 
     private fun setViewModel() {
-        viewModel = ViewModelProviders.of(this).get(NewViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(),viewModelProviderFactory).get(NewViewModel::class.java)
         //        viewModel.callBDLResponseClient();
     }
 
@@ -262,11 +268,6 @@ class GameFragment : Fragment() {
     }
 
     companion object {
-        //    private Handler handler;
-        //    private Handler handler2;
         private const val TAG = "GameFragment"
-        fun newInstance(): GameFragment {
-            return GameFragment()
-        }
     }
 }

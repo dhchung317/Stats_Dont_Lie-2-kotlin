@@ -9,18 +9,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hyunki.statsdontlie2.BaseApplication
-import com.hyunki.statsdontlie2.OnFragmentInteractionListener
+import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
 import com.hyunki.statsdontlie2.R
 import com.hyunki.statsdontlie2.model.PlayerAverageModel
 import com.hyunki.statsdontlie2.network.ResponseState
 import com.hyunki.statsdontlie2.view.fragments.GameFragment
 import com.hyunki.statsdontlie2.view.fragments.MenuFragment
 import com.hyunki.statsdontlie2.view.fragments.ResultFragment
-import com.hyunki.statsdontlie2.viewmodel.NewViewModel
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
+
+    @Inject
+    lateinit var menuFragment: MenuFragment
+
+    @Inject
+    lateinit var gameFragment: GameFragment
+
+    @Inject
+    lateinit var resultFragment: ResultFragment
+
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
@@ -48,23 +57,27 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     override fun displayMenuFragment() {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.main_container, MenuFragment.Companion.newInstance())
+                .replace(R.id.main_container, menuFragment)
                 .commit()
     }
 
     override fun displayGameFragment() {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.main_container, GameFragment.Companion.newInstance(), "game")
+                .replace(R.id.main_container, gameFragment, "game")
                 .addToBackStack(null)
                 .commit()
     }
 
-    override fun displayResultFragment(playerCorrectGuesses: Int, playerIncorrectGuesses: Int) {
+    override fun displayResultFragment() {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.main_container, ResultFragment.Companion.newInstance(playerCorrectGuesses, playerIncorrectGuesses))
+                .replace(R.id.main_container, resultFragment)
                 .commit()
+    }
+
+    override fun setResultsDataFromGameFragment(playerCorrectGuesses: Int, playerIncorrectGuesses: Int) {
+        TODO("Not yet implemented")
     }
 
     private fun processResponse(res: ResponseState) {
@@ -74,6 +87,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
             }
             is ResponseState.Success.OnResponsesLoaded -> {
                 playerAverageModels = res.players
+                Log.d(TAG, "processResponse: " + res.players.size)
+
                 showProgressBar(false)
                 displayMenuFragment()
             }
