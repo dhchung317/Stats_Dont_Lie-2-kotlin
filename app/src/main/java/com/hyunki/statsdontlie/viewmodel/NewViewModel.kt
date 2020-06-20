@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.liveData
 import com.hyunki.statsdontlie.constants.BDLAppConstants
 import com.hyunki.statsdontlie.localdb.BDLDatabaseRepositoryImpl
 import com.hyunki.statsdontlie.model.PlayerAverageModel
@@ -12,6 +13,7 @@ import com.hyunki.statsdontlie.repository.BDLRepository
 import com.hyunki.statsdontlie.utils.GameStatUtil
 import com.hyunki.statsdontlie.utils.PlayerModelCreator
 import com.hyunki.statsdontlie.utils.PlayerUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -22,7 +24,8 @@ class NewViewModel(private val databaseRepository: BDLDatabaseRepositoryImpl, pr
     private lateinit var playerAverageModels: List<PlayerAverageModel>
 
     @SuppressLint("CheckResult")
-    suspend fun callBDLResponseClient() {
+    suspend fun callBDLResponseClient() = liveData(Dispatchers.IO) {
+
         val playerIdLists: MutableList<Int> = ArrayList()
         for (playerIds in BDLAppConstants.PLAYER_ARRAY_CONSTANTS) {
             playerIdLists.add(playerIds)

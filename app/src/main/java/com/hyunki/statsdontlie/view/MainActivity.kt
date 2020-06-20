@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     }
 
     @SuppressLint("CheckResult")
-    private suspend fun viewModelSetUp() {
+    private fun viewModelSetUp() {
         val viewModel: NewViewModel = NewViewModel.Companion.getInstance(this)
         viewModel.callBDLResponseClient()
         displayMenuFragment()
