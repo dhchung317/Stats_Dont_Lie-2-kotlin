@@ -1,3 +1,0 @@
-package com.example.statsdontlie.repository
-
-interface BaseRepository
