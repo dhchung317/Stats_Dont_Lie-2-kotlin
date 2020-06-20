@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.hyunki.statsdontlie.BaseApplication
 import com.hyunki.statsdontlie.OnFragmentInteractionListener
 import com.hyunki.statsdontlie.R
 import com.hyunki.statsdontlie.model.PlayerAverageModel
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     private val playerAverageModels: MutableList<PlayerAverageModel?> = ArrayList()
     var viewModel: NewViewModel? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as BaseApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel = NewViewModel.Companion.getInstance(this)
@@ -24,7 +26,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     }
 
     @SuppressLint("CheckResult")
-    private fun viewModelSetUp() {
+    private suspend fun viewModelSetUp() {
         val viewModel: NewViewModel = NewViewModel.Companion.getInstance(this)
         viewModel.callBDLResponseClient()
         displayMenuFragment()

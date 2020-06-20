@@ -25,33 +25,37 @@ import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
 
 class GameFragment : Fragment() {
-    private var listener: OnFragmentInteractionListener? = null
+    private lateinit var listener: OnFragmentInteractionListener
 
-    private var playerOneCardView: CardView? = null
-    private var playerTwoCardView: CardView? = null
+    private lateinit var playerOneCardView: CardView
+    private lateinit var playerTwoCardView: CardView
 
-    private var playerOneImage: ImageView? = null
-    private var playerTwoImage: ImageView? = null
+    private lateinit var playerOneImage: ImageView
+    private lateinit var playerTwoImage: ImageView
 
-    private var playerOneTextView: TextView? = null
-    private var playerTwoTextView: TextView? = null
+    private lateinit var playerOneTextView: TextView
+    private lateinit var playerTwoTextView: TextView
 
-    private var playerOneStatTextView: TextView? = null
-    private var playerTwoStatTextView: TextView? = null
+    private lateinit var playerOneStatTextView: TextView
+    private lateinit var playerTwoStatTextView: TextView
 
-    private var countDownView: TextView? = null
-    private var displayQuestionTextView: TextView? = null
+    private lateinit var countDownView: TextView
+    private lateinit var displayQuestionTextView: TextView
 
-    private var player1: PlayerAverageModel? = null
-    private var player2: PlayerAverageModel? = null
-    private var viewModel: NewViewModel? = null
+    private lateinit var player1: PlayerAverageModel
+    private lateinit var player2: PlayerAverageModel
+
+    private lateinit var viewModel: NewViewModel
+
     private var playerCorrectGuesses = 0
     private var playerInCorrectGuesses = 0
-    private var countDownTimer: CountDownTimer? = null
-    private var playerAverageModels: List<PlayerAverageModel?>? = null
+    private lateinit var countDownTimer: CountDownTimer
+    private lateinit var playerAverageModels: List<PlayerAverageModel>
     private var randomQuestionPosition = 0
-    private var correct: ImageView? = null
-    private var incorrect: ImageView? = null
+
+    private lateinit var correct: ImageView
+    private lateinit var incorrect: ImageView
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
@@ -66,7 +70,7 @@ class GameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         findViews(view)
         setViewModel()
-        playerAverageModels = viewModel!!.playerAverageModels
+        playerAverageModels = viewModel.getPlayerAverageModels()
         setCountDownTimer()
         setRandomPlayers(playerAverageModels)
         setViews()
@@ -98,7 +102,7 @@ class GameFragment : Fragment() {
     private fun setCountDownTimer() {
         countDownTimer = object : CountDownTimer(20000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                countDownView!!.text = (millisUntilFinished / 1000).toString()
+                countDownView.text = (millisUntilFinished / 1000).toString()
             }
 
             override fun onFinish() {
@@ -108,7 +112,7 @@ class GameFragment : Fragment() {
 //                correct.clearAnimation();
 //                handler.removeCallbacksAndMessages(null);
 //                handler2.removeCallbacksAndMessages(null);
-                listener!!.displayResultFragment(playerCorrectGuesses, playerInCorrectGuesses)
+                listener.displayResultFragment(playerCorrectGuesses, playerInCorrectGuesses)
             }
         }
         countDownTimer.start()
@@ -121,30 +125,30 @@ class GameFragment : Fragment() {
 
     //
     private fun observeViewModel() {
-        playerAverageModels = viewModel!!.playerAverageModels
+        playerAverageModels = viewModel.getPlayerAverageModels()
     }
 
-    private fun setRandomPlayers(playerAverageModels: List<PlayerAverageModel?>?) {
-        player1 = playerAverageModels!![RandomNumberGenerator.getRandomNumber1()]
-        player2 = playerAverageModels[RandomNumberGenerator.getRandomNumber2()]
+    private fun setRandomPlayers(playerAverageModels: List<PlayerAverageModel>) {
+        player1 = playerAverageModels[RandomNumberGenerator.randomNumber1]
+        player2 = playerAverageModels[RandomNumberGenerator.randomNumber2]
     }
 
     private fun setViews() {
-        playerOneTextView.setText(player1.getFirstName())
-        playerTwoTextView.setText(player2.getFirstName())
+        playerOneTextView.text = player1.firstName
+        playerTwoTextView.text = player2.firstName
         Log.d(TAG, "setViews: " + player1.toString())
         Log.d(TAG, "setViews: " + player2.toString())
         Picasso.get()
-                .load(PlayerUtil.getPlayerPhotoUrl(player1.getFirstName(), player1.getLastName()))
+                .load(PlayerUtil.getPlayerPhotoUrl(player1.firstName, player1.lastName))
                 .into(playerOneImage)
         Picasso.get()
-                .load(PlayerUtil.getPlayerPhotoUrl(player2.getFirstName(), player2.getLastName()))
+                .load(PlayerUtil.getPlayerPhotoUrl(player2.firstName, player2.lastName))
                 .into(playerTwoImage)
         randomQuestion
         //        playerOneCardView.startAnimation(Animations.getFadeIn(playerOneCardView));
 //        playerTwoCardView.startAnimation(Animations.getFadeIn(playerTwoCardView));
-        playerOneStatTextView!!.text = "" + DecimalFormat("#.#").format(player1!!.getStat(randomQuestionPosition))
-        playerTwoStatTextView!!.text = "" + DecimalFormat("#.#").format(player2!!.getStat(randomQuestionPosition))
+        playerOneStatTextView.text = DecimalFormat("#.#").format(player1.getStat(randomQuestionPosition))
+        playerTwoStatTextView.text = DecimalFormat("#.#").format(player2.getStat(randomQuestionPosition))
     }
 
     private fun flipViews() {
@@ -216,14 +220,14 @@ class GameFragment : Fragment() {
     }
 
     private fun setPlayer1CardView() {
-        playerOneCardView!!.setOnClickListener { v: View? ->
+        playerOneCardView.setOnClickListener { v: View? ->
             roundResults(1)
             flipViews()
         }
     }
 
     private fun setPlayer2CardView() {
-        playerTwoCardView!!.setOnClickListener { v: View? ->
+        playerTwoCardView.setOnClickListener { v: View? ->
             roundResults(2)
             flipViews()
         }
@@ -231,10 +235,10 @@ class GameFragment : Fragment() {
 
     private fun roundResults(i: Int) {
         if (GameJudger(player1, player2, i, randomQuestionPosition).isPlayerChoiceCorrect) {
-            correct!!.startAnimation(Animations.getChecker(correct))
+            correct.startAnimation(Animations.getChecker(correct))
             playerCorrectGuesses++
         } else {
-            incorrect!!.startAnimation(Animations.getChecker(incorrect))
+            incorrect.startAnimation(Animations.getChecker(incorrect))
             playerInCorrectGuesses++
         }
     }
@@ -247,14 +251,14 @@ class GameFragment : Fragment() {
 
     private val randomQuestion: Unit
         private get() {
-            randomQuestionPosition = RandomNumberGenerator.getRandomNumber()
+            randomQuestionPosition = RandomNumberGenerator.randomNumber
             Log.d(TAG, "getRandomQuestion: $randomQuestionPosition")
-            displayQuestionTextView!!.text = BDLAppConstants.QUESTIONS_ARRAY[randomQuestionPosition]
+            displayQuestionTextView.text = BDLAppConstants.QUESTIONS_ARRAY[randomQuestionPosition]
         }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        countDownTimer!!.cancel()
+        countDownTimer.cancel()
     }
 
     companion object {

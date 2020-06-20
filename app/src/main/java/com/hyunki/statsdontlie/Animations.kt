@@ -8,7 +8,7 @@ import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
 
 object Animations {
-    private var checker: Animation? = null
+    private lateinit var checker: Animation
     private var fadeIn: Animation? = null
     private var fadeOut: Animation? = null
     fun getChecker(v: View?): Animation? {
