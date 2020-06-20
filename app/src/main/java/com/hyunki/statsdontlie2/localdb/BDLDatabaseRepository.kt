@@ -1,7 +1,6 @@
 package com.hyunki.statsdontlie2.localdb
 
 import android.graphics.Bitmap
-import android.graphics.drawable.AnimatedImageDrawable
 import com.hyunki.statsdontlie2.model.NBAPlayer
 
 

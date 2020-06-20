@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.hyunki.statsdontlie2.constants.BDLAppConstants
+import com.hyunki.statsdontlie2.constants.GameConstants
 import com.hyunki.statsdontlie2.localdb.BDLDatabaseRepository
 import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.network.ResponseState
@@ -32,18 +32,16 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
         emit(ResponseState.Loading)
 
         val playerIdLists: MutableList<Int> = ArrayList()
-        for (playerIds in BDLAppConstants.PLAYER_ARRAY_CONSTANTS) {
+
+        for (playerIds in GameConstants.PLAYER_ARRAY_CONSTANTS) {
             playerIdLists.add(playerIds)
         }
-        Log.d(TAG, "callBDLResponseClient: " + playerIdLists.size)
+
         try {
             withContext(Dispatchers.Default) {
-
-
                 val res = async {
                     playerIdLists.asFlow().map { id ->
                         repository.callBDLResponseClient(id)
-
                     }.toList()
                 }
 
@@ -70,9 +68,6 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
                         )
                     }.toList()
                 }
-
-
-
                 emit(ResponseState.Success.OnResponsesLoaded(playerAverageModels.await()))
             }
         } catch (e: Exception) {
@@ -96,11 +91,20 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
         return databaseRepository.getPlayerImage(playerID)
     }
 
-    fun setCorrectGuesses(correct: Int){
+    fun setCorrectGuesses(correct: Int) {
         correctGuesses = correct
     }
-    fun setIncorrectGuesses(incorrect: Int){
+
+    fun setIncorrectGuesses(incorrect: Int) {
         incorrectGuesses = incorrect
+    }
+
+    fun getCorrectGuesses(): Int{
+        return correctGuesses
+    }
+
+    fun getIncorrectGuesses(): Int {
+        return incorrectGuesses
     }
 
     companion object {

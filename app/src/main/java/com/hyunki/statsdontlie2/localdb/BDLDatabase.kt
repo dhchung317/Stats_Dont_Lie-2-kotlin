@@ -1,10 +1,7 @@
 package com.hyunki.statsdontlie2.localdb
 
-import android.graphics.Bitmap
 import com.hyunki.statsdontlie2.Database
 import com.hyunki.statsdontlie2.model.NBAPlayer
-import com.hyunki.statsdontlie2.utils.ImageUtil
-
 import javax.inject.Inject
 
 class BDLDatabase @Inject constructor(private val database: Database) {
@@ -50,19 +47,18 @@ class BDLDatabase @Inject constructor(private val database: Database) {
 
     fun getPlayerById(playerID: Int): NBAPlayer {
         val player = database.savedNBAPlayerQueries.selectById(playerID.toLong()).executeAsOne()
-        return player as NBAPlayer
-//        return NBAPlayer(
-//                player.executeAsOne().playerID,
-//                player.executeAsOne().firstName,
-//                player.executeAsOne().lastName,
-//                player.executeAsOne().image,
-//                player.executeAsOne().playerPointAvg!!,
-//                player.executeAsOne().playerAssistAvg!!,
-//                player.executeAsOne().playerBlocksAvg!!,
-//                player.executeAsOne().playerDefRebAvg!!,
-//                player.executeAsOne().player3PM!!,
-//                player.executeAsOne().player3PA!!
-//        )
+        return NBAPlayer(
+                player.playerID,
+                player.firstName,
+                player.lastName,
+                player.image,
+                player.playerPointAvg!!,
+                player.playerAssistAvg!!,
+                player.playerBlocksAvg!!,
+                player.playerDefRebAvg!!,
+                player.player3PM!!,
+                player.player3PA!!
+        )
     }
 
     fun addPlayerImage(playerId: Int, image: ByteArray?) {

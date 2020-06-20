@@ -31,16 +31,4 @@ class BDLDatabaseRepositoryImpl @Inject constructor(private val bdlDatabase: BDL
                 bdlDatabase.getPlayerImage(playerId)!!.size
         )
     }
-
-
-
-
-//    override val playerAverageModelList: List<PlayerAverageModel>
-//        get() {
-//            val playerAverageModelList: MutableList<PlayerAverageModel> = ArrayList()
-//            for (i in BDLAppConstants.PLAYER_ARRAY_CONSTANTS) {
-//                playerAverageModelList.add(getPlayerAverageModelById(i))
-//            }
-//            return playerAverageModelList
-//        }
 }

@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         viewModel.callBDLResponseClient().observe(this, Observer {
             processResponse(it)
         })
-
     }
 
     override fun displayMenuFragment() {

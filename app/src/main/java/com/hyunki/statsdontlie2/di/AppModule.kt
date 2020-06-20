@@ -1,6 +1,6 @@
 package com.hyunki.statsdontlie2.di
 
-import com.hyunki.statsdontlie2.constants.BDLAppConstants
+import com.hyunki.statsdontlie2.constants.NetworkConstants
 import com.hyunki.statsdontlie2.localdb.BDLDatabase
 import com.hyunki.statsdontlie2.localdb.BDLDatabaseRepository
 import com.hyunki.statsdontlie2.localdb.BDLDatabaseRepositoryImpl
@@ -30,7 +30,7 @@ class AppModule {
                 .addInterceptor(interceptor).build()
 
         return Retrofit.Builder()
-                .baseUrl(BDLAppConstants.BASE_URL).client(client)
+                .baseUrl(NetworkConstants.BASE_URL).client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
     }
@@ -52,7 +52,4 @@ class AppModule {
     fun provideRepository(service: BDLService): Repository {
         return RepositoryImpl(service)
     }
-
-
-
 }

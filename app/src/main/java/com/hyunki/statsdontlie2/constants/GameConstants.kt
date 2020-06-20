@@ -1,8 +1,6 @@
 package com.hyunki.statsdontlie2.constants
 
-object BDLAppConstants {
-    const val BASE_URL = "https://www.balldontlie.io"
-    const val ENDPOINT = "/api/v1/stats"
+object GameConstants {
     const val BDLREPOSITORY_TAG = "BDLRepository"
     const val MAIN_ACTIVITY_TAG = "MainActivity"
     const val EXAMPLE_UNIT_TEST_TAG = "ExampleUnitTest"

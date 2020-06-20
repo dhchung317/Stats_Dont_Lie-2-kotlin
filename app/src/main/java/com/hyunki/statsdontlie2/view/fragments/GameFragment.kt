@@ -11,13 +11,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.hyunki.statsdontlie2.Animations
 import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
 import com.hyunki.statsdontlie2.R
-import com.hyunki.statsdontlie2.constants.BDLAppConstants
+import com.hyunki.statsdontlie2.constants.GameConstants
 import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.utils.GameJudger
 import com.hyunki.statsdontlie2.utils.PlayerUtil
@@ -27,7 +25,9 @@ import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
 import javax.inject.Inject
-
+//TODO work on animations
+//TODO work on ui : placement of name text, edge cases for long names
+//TODO refactor
 class GameFragment @Inject constructor(private val viewModelProviderFactory: ViewModelProviderFactory) : Fragment() {
     private lateinit var listener: OnFragmentInteractionListener
 
@@ -46,15 +46,15 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     private lateinit var countDownView: TextView
     private lateinit var displayQuestionTextView: TextView
 
-    private lateinit var NBAPlayer1: NBAPlayer
-    private lateinit var NBAPlayer2: NBAPlayer
+    private lateinit var nbaPlayer1: NBAPlayer
+    private lateinit var nbaPlayer2: NBAPlayer
 
     private lateinit var viewModel: NewViewModel
 
     private var playerCorrectGuesses = 0
     private var playerInCorrectGuesses = 0
     private lateinit var countDownTimer: CountDownTimer
-    private lateinit var NBAPlayers: List<NBAPlayer>
+    private lateinit var nbaPlayers: List<NBAPlayer>
     private var randomQuestionPosition = 0
 
     private lateinit var correct: ImageView
@@ -74,9 +74,9 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         findViews(view)
         setViewModel()
-        NBAPlayers = viewModel.getPlayerAverageModels()
+        nbaPlayers = viewModel.getPlayerAverageModels()
         setCountDownTimer()
-        setRandomPlayers(NBAPlayers)
+        setRandomPlayers(nbaPlayers)
         setViews()
 
 //        observeViewModel();
@@ -116,7 +116,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 //                correct.clearAnimation();
 //                handler.removeCallbacksAndMessages(null);
 //                handler2.removeCallbacksAndMessages(null);
-                //todo listener to set results in viewmodel
                 listener.setResultsDataFromGameFragment(playerCorrectGuesses, playerInCorrectGuesses)
                 listener.displayResultFragment()
             }
@@ -131,19 +130,19 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     //
     private fun observeViewModel() {
-        NBAPlayers = viewModel.getPlayerAverageModels()
+        nbaPlayers = viewModel.getPlayerAverageModels()
     }
 
     private fun setRandomPlayers(NBAPlayers: List<NBAPlayer>) {
-        NBAPlayer1 = NBAPlayers[RandomNumberGenerator.randomNumber1]
-        NBAPlayer2 = NBAPlayers[RandomNumberGenerator.randomNumber2]
+        nbaPlayer1 = NBAPlayers[RandomNumberGenerator.randomNumber1]
+        nbaPlayer2 = NBAPlayers[RandomNumberGenerator.randomNumber2]
     }
 
     private fun setViews() {
-        playerOneTextView.text = NBAPlayer1.firstName
-        playerTwoTextView.text = NBAPlayer2.firstName
-        Log.d(TAG, "setViews: $NBAPlayer1")
-        Log.d(TAG, "setViews: $NBAPlayer2")
+        playerOneTextView.text = nbaPlayer1.firstName
+        playerTwoTextView.text = nbaPlayer2.firstName
+        Log.d(TAG, "setViews: $nbaPlayer1")
+        Log.d(TAG, "setViews: $nbaPlayer2")
 
         setPlayerOneImage()
         setPlayerTwoImage()
@@ -151,28 +150,28 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         randomQuestion
         //        playerOneCardView.startAnimation(Animations.getFadeIn(playerOneCardView));
 //        playerTwoCardView.startAnimation(Animations.getFadeIn(playerTwoCardView));
-        playerOneStatTextView.text = DecimalFormat("#.#").format(NBAPlayer1.getStat(randomQuestionPosition))
-        playerTwoStatTextView.text = DecimalFormat("#.#").format(NBAPlayer2.getStat(randomQuestionPosition))
+        playerOneStatTextView.text = DecimalFormat("#.#").format(nbaPlayer1.getStat(randomQuestionPosition))
+        playerTwoStatTextView.text = DecimalFormat("#.#").format(nbaPlayer2.getStat(randomQuestionPosition))
     }
 
     private fun setPlayerOneImage() {
-        val bitmap = viewModel.getImageFromDatabase(NBAPlayer1.playerID.toInt())
+        val bitmap = viewModel.getImageFromDatabase(nbaPlayer1.playerID.toInt())
         if(bitmap != null){
             playerOneImage.setImageBitmap(bitmap)
         }else{
             Picasso.get()
-                    .load(PlayerUtil.getPlayerPhotoUrl(NBAPlayer1.firstName, NBAPlayer1.lastName))
+                    .load(PlayerUtil.getPlayerPhotoUrl(nbaPlayer1.firstName, nbaPlayer1.lastName))
                     .into(playerOneImage)
         }
     }
 
     private fun setPlayerTwoImage() {
-        val bitmap = viewModel.getImageFromDatabase(NBAPlayer2.playerID.toInt())
+        val bitmap = viewModel.getImageFromDatabase(nbaPlayer2.playerID.toInt())
         if(bitmap != null){
             playerTwoImage.setImageBitmap(bitmap)
         }else{
             Picasso.get()
-                    .load(PlayerUtil.getPlayerPhotoUrl(NBAPlayer1.firstName, NBAPlayer1.lastName))
+                    .load(PlayerUtil.getPlayerPhotoUrl(nbaPlayer1.firstName, nbaPlayer1.lastName))
                     .into(playerOneImage)
         }
     }
@@ -260,7 +259,8 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun roundResults(i: Int) {
-        if (GameJudger(NBAPlayer1, NBAPlayer2, i, randomQuestionPosition).isPlayerChoiceCorrect) {
+
+        if (GameJudger(nbaPlayer1, nbaPlayer2, i, randomQuestionPosition).isPlayerChoiceCorrect) {
             correct.startAnimation(Animations.getChecker(correct))
             playerCorrectGuesses++
         } else {
@@ -271,7 +271,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     private fun reloadPlayersAndViews() {
         randomQuestion
-        setRandomPlayers(NBAPlayers)
+        setRandomPlayers(nbaPlayers)
         setViews()
     }
 
@@ -279,7 +279,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         private get() {
             randomQuestionPosition = RandomNumberGenerator.randomNumber
             Log.d(TAG, "getRandomQuestion: $randomQuestionPosition")
-            displayQuestionTextView.text = BDLAppConstants.QUESTIONS_ARRAY[randomQuestionPosition]
+            displayQuestionTextView.text = GameConstants.QUESTIONS_ARRAY[randomQuestionPosition]
         }
 
     override fun onDestroyView() {
