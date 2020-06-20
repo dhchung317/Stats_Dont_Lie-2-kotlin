@@ -1,6 +1,6 @@
 package com.hyunki.statsdontlie2.network
 
-import com.hyunki.statsdontlie2.model.PlayerAverageModel
+import com.hyunki.statsdontlie2.model.NBAPlayer
 
 sealed class ResponseState {
     object Loading: ResponseState()
@@ -9,7 +9,7 @@ sealed class ResponseState {
 
     sealed class Success: ResponseState() {
         data class OnResponsesLoaded(
-                val players: List<PlayerAverageModel>
+                val NBAPlayers: List<NBAPlayer>
         ): Success()
     }
 }

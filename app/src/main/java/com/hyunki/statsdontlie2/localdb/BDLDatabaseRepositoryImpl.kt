@@ -1,39 +1,46 @@
 package com.hyunki.statsdontlie2.localdb
 
-import android.util.Log
-import com.hyunki.statsdontlie2.constants.BDLAppConstants
-import com.hyunki.statsdontlie2.model.PlayerAverageModel
-import java.util.*
+
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import com.hyunki.statsdontlie2.model.NBAPlayer
 import javax.inject.Inject
 
 class BDLDatabaseRepositoryImpl @Inject constructor(private val bdlDatabase: BDLDatabase) : BDLDatabaseRepository {
-    override fun addPlayerData(playerAverageModel: PlayerAverageModel) {
-        bdlDatabase.addNBAPlayers(playerAverageModel)
+
+    override fun addAllPlayerData(NBAPlayers: List<NBAPlayer>) {
+        bdlDatabase.addAllPlayerData(NBAPlayers)
     }
 
-    override fun getPlayerAverageModelById(playerID: Int): PlayerAverageModel {
-        val q = bdlDatabase!!.nBAPlayerQueries!!.selectById(playerID.toLong())
-        Log.d("danny", q.executeAsList().toString() + playerID)
-        return PlayerAverageModel(
-                q.executeAsOne().playerID,
-                q.executeAsOne().firstName,
-                q.executeAsOne().lastName,
-                q.executeAsOne().image,
-                q.executeAsOne().playerPointAvg!!,
-                q.executeAsOne().playerAssistAvg!!,
-                q.executeAsOne().playerBlocksAvg!!,
-                q.executeAsOne().playerDefRebAvg!!,
-                q.executeAsOne().player3PM!!,
-                q.executeAsOne().player3PA!!
+    override fun getAllPlayerData(): List<NBAPlayer> {
+        return bdlDatabase.getAllPlayerData()
+    }
+
+    override fun getPlayerAverageModelById(playerID: Int): NBAPlayer {
+        return bdlDatabase.getPlayerById(playerID)
+    }
+
+    override fun addPlayerImage(playerId: Int, image: ByteArray) {
+        bdlDatabase.addPlayerImage(playerId, image)
+    }
+
+    override fun getPlayerImage(playerId: Int): Bitmap? {
+        return BitmapFactory.decodeByteArray(
+                bdlDatabase.getPlayerImage(playerId),
+                0,
+                bdlDatabase.getPlayerImage(playerId)!!.size
         )
     }
 
-    override val playerAverageModelList: List<PlayerAverageModel>
-        get() {
-            val playerAverageModelList: MutableList<PlayerAverageModel> = ArrayList()
-            for (i in BDLAppConstants.PLAYER_ARRAY_CONSTANTS) {
-                playerAverageModelList.add(getPlayerAverageModelById(i))
-            }
-            return playerAverageModelList
-        }
+
+
+
+//    override val playerAverageModelList: List<PlayerAverageModel>
+//        get() {
+//            val playerAverageModelList: MutableList<PlayerAverageModel> = ArrayList()
+//            for (i in BDLAppConstants.PLAYER_ARRAY_CONSTANTS) {
+//                playerAverageModelList.add(getPlayerAverageModelById(i))
+//            }
+//            return playerAverageModelList
+//        }
 }

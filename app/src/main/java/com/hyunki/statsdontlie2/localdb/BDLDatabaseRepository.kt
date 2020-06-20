@@ -1,9 +1,14 @@
 package com.hyunki.statsdontlie2.localdb
 
-import com.hyunki.statsdontlie2.model.PlayerAverageModel
+import android.graphics.Bitmap
+import android.graphics.drawable.AnimatedImageDrawable
+import com.hyunki.statsdontlie2.model.NBAPlayer
+
 
 interface BDLDatabaseRepository {
-    fun addPlayerData(playerAverageModel: PlayerAverageModel)
-    fun getPlayerAverageModelById(playerID: Int): PlayerAverageModel
-    val playerAverageModelList: List<PlayerAverageModel>
+    fun addAllPlayerData(NBAPlayers: List<NBAPlayer>)
+    fun getPlayerAverageModelById(playerID: Int): NBAPlayer
+    fun getAllPlayerData():List<NBAPlayer>
+    fun addPlayerImage(playerID: Int, image: ByteArray)
+    fun getPlayerImage(playerID: Int): Bitmap?
 }

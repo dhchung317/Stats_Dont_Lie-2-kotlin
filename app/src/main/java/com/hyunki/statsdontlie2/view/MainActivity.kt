@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.hyunki.statsdontlie2.BaseApplication
 import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
 import com.hyunki.statsdontlie2.R
-import com.hyunki.statsdontlie2.model.PlayerAverageModel
+import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.network.ResponseState
 import com.hyunki.statsdontlie2.view.fragments.GameFragment
 import com.hyunki.statsdontlie2.view.fragments.MenuFragment
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
-    private lateinit var playerAverageModels: List<PlayerAverageModel>
+    private lateinit var NBAPlayers: List<NBAPlayer>
     private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: NewViewModel
 
@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     }
 
     override fun setResultsDataFromGameFragment(playerCorrectGuesses: Int, playerIncorrectGuesses: Int) {
-        TODO("Not yet implemented")
+        viewModel.setCorrectGuesses(playerCorrectGuesses)
+        viewModel.setIncorrectGuesses(playerIncorrectGuesses)
     }
 
     private fun processResponse(res: ResponseState) {
@@ -86,9 +87,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
                 showProgressBar(true)
             }
             is ResponseState.Success.OnResponsesLoaded -> {
-                playerAverageModels = res.players
-                Log.d(TAG, "processResponse: " + res.players.size)
+                NBAPlayers = res.NBAPlayers
+                Log.d(TAG, "processResponse: " + res.NBAPlayers.size)
 
+                viewModel.saveAllPlayers(res.NBAPlayers)
                 showProgressBar(false)
                 displayMenuFragment()
             }

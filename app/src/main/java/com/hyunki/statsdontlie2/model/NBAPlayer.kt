@@ -1,15 +1,17 @@
 package com.hyunki.statsdontlie2.model
 
-data class PlayerAverageModel(val playerID: Long,
-                         val firstName: String,
-                         val lastName: String,
-                         val image: String,
-                         val playerPointAvg: Double,
-                         val playerAssistAvg: Double,
-                         val playerBlocksAvg: Double,
-                         val playerDefRebAvg: Double,
-                         val player3PM: Double,
-                         val player3PA: Double) {
+import com.hyunki.sql.SavedNBAPlayer
+
+data class NBAPlayer(val playerID: Long,
+                     val firstName: String,
+                     val lastName: String,
+                     val image: String,
+                     val playerPointAvg: Double,
+                     val playerAssistAvg: Double,
+                     val playerBlocksAvg: Double,
+                     val playerDefRebAvg: Double,
+                     val player3PM: Double,
+                     val player3PA: Double) {
 
     fun getStat(position: Int): Double {
         return when (position) {
@@ -37,8 +39,8 @@ data class PlayerAverageModel(val playerID: Long,
     }
 
     companion object {
-        val EMPTY: PlayerAverageModel
-            get() = PlayerAverageModel(1, "", "", "", 0.0,
+        val EMPTY: NBAPlayer
+            get() = NBAPlayer(1, "", "", "", 0.0,
                     0.0, 0.0, 0.0, 0.0, 0.0)
     }
 
