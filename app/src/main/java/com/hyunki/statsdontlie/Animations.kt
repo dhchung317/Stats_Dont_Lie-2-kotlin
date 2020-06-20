@@ -9,8 +9,9 @@ import androidx.annotation.RequiresApi
 
 object Animations {
     private lateinit var checker: Animation
-    private var fadeIn: Animation? = null
-    private var fadeOut: Animation? = null
+    private lateinit var fadeIn: Animation
+    private lateinit var fadeOut: Animation
+
     fun getChecker(v: View?): Animation? {
         checker = AnimationUtils.loadAnimation(v!!.context, R.anim.right_or_wrong)
         checker.setAnimationListener(object : AnimationListener {
