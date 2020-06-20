@@ -18,7 +18,7 @@ import com.hyunki.statsdontlie2.Animations
 import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
 import com.hyunki.statsdontlie2.R
 import com.hyunki.statsdontlie2.constants.BDLAppConstants
-import com.hyunki.statsdontlie2.model.PlayerAverageModel
+import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.utils.GameJudger
 import com.hyunki.statsdontlie2.utils.PlayerUtil
 import com.hyunki.statsdontlie2.utils.RandomNumberGenerator
@@ -46,15 +46,15 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     private lateinit var countDownView: TextView
     private lateinit var displayQuestionTextView: TextView
 
-    private lateinit var player1: PlayerAverageModel
-    private lateinit var player2: PlayerAverageModel
+    private lateinit var NBAPlayer1: NBAPlayer
+    private lateinit var NBAPlayer2: NBAPlayer
 
     private lateinit var viewModel: NewViewModel
 
     private var playerCorrectGuesses = 0
     private var playerInCorrectGuesses = 0
     private lateinit var countDownTimer: CountDownTimer
-    private lateinit var playerAverageModels: List<PlayerAverageModel>
+    private lateinit var NBAPlayers: List<NBAPlayer>
     private var randomQuestionPosition = 0
 
     private lateinit var correct: ImageView
@@ -74,9 +74,9 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         findViews(view)
         setViewModel()
-        playerAverageModels = viewModel.getPlayerAverageModels()
+        NBAPlayers = viewModel.getPlayerAverageModels()
         setCountDownTimer()
-        setRandomPlayers(playerAverageModels)
+        setRandomPlayers(NBAPlayers)
         setViews()
 
 //        observeViewModel();
@@ -131,30 +131,30 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     //
     private fun observeViewModel() {
-        playerAverageModels = viewModel.getPlayerAverageModels()
+        NBAPlayers = viewModel.getPlayerAverageModels()
     }
 
-    private fun setRandomPlayers(playerAverageModels: List<PlayerAverageModel>) {
-        player1 = playerAverageModels[RandomNumberGenerator.randomNumber1]
-        player2 = playerAverageModels[RandomNumberGenerator.randomNumber2]
+    private fun setRandomPlayers(NBAPlayers: List<NBAPlayer>) {
+        NBAPlayer1 = NBAPlayers[RandomNumberGenerator.randomNumber1]
+        NBAPlayer2 = NBAPlayers[RandomNumberGenerator.randomNumber2]
     }
 
     private fun setViews() {
-        playerOneTextView.text = player1.firstName
-        playerTwoTextView.text = player2.firstName
-        Log.d(TAG, "setViews: $player1")
-        Log.d(TAG, "setViews: $player2")
+        playerOneTextView.text = NBAPlayer1.firstName
+        playerTwoTextView.text = NBAPlayer2.firstName
+        Log.d(TAG, "setViews: $NBAPlayer1")
+        Log.d(TAG, "setViews: $NBAPlayer2")
         Picasso.get()
-                .load(PlayerUtil.getPlayerPhotoUrl(player1.firstName, player1.lastName))
+                .load(PlayerUtil.getPlayerPhotoUrl(NBAPlayer1.firstName, NBAPlayer1.lastName))
                 .into(playerOneImage)
         Picasso.get()
-                .load(PlayerUtil.getPlayerPhotoUrl(player2.firstName, player2.lastName))
+                .load(PlayerUtil.getPlayerPhotoUrl(NBAPlayer2.firstName, NBAPlayer2.lastName))
                 .into(playerTwoImage)
         randomQuestion
         //        playerOneCardView.startAnimation(Animations.getFadeIn(playerOneCardView));
 //        playerTwoCardView.startAnimation(Animations.getFadeIn(playerTwoCardView));
-        playerOneStatTextView.text = DecimalFormat("#.#").format(player1.getStat(randomQuestionPosition))
-        playerTwoStatTextView.text = DecimalFormat("#.#").format(player2.getStat(randomQuestionPosition))
+        playerOneStatTextView.text = DecimalFormat("#.#").format(NBAPlayer1.getStat(randomQuestionPosition))
+        playerTwoStatTextView.text = DecimalFormat("#.#").format(NBAPlayer2.getStat(randomQuestionPosition))
     }
 
     private fun flipViews() {
@@ -240,7 +240,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun roundResults(i: Int) {
-        if (GameJudger(player1, player2, i, randomQuestionPosition).isPlayerChoiceCorrect) {
+        if (GameJudger(NBAPlayer1, NBAPlayer2, i, randomQuestionPosition).isPlayerChoiceCorrect) {
             correct.startAnimation(Animations.getChecker(correct))
             playerCorrectGuesses++
         } else {
@@ -251,7 +251,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     private fun reloadPlayersAndViews() {
         randomQuestion
-        setRandomPlayers(playerAverageModels)
+        setRandomPlayers(NBAPlayers)
         setViews()
     }
 

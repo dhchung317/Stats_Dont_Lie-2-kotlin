@@ -1,14 +1,14 @@
 package com.hyunki.statsdontlie2.utils
 
-import com.hyunki.statsdontlie2.model.PlayerAverageModel
+import com.hyunki.statsdontlie2.model.NBAPlayer
 
 object PlayerModelCreator {
     fun createPlayerModel(playerID: Long,
                           firstName: String,
                           lastName: String,
                           image: String,
-                          gameStatUtil: GameStatUtil): PlayerAverageModel {
-        return PlayerAverageModel(
+                          gameStatUtil: GameStatUtil): NBAPlayer {
+        return NBAPlayer(
                 playerID,
                 firstName,
                 lastName,

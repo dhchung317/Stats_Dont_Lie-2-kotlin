@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.hyunki.statsdontlie2.constants.BDLAppConstants
 import com.hyunki.statsdontlie2.localdb.BDLDatabaseRepository
-import com.hyunki.statsdontlie2.model.PlayerAverageModel
+import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.network.ResponseState
 import com.hyunki.statsdontlie2.repository.Repository
 import com.hyunki.statsdontlie2.utils.GameStatUtil
@@ -65,8 +65,12 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
         }
     }
 
-    fun getPlayerAverageModels(): List<PlayerAverageModel> {
-        return databaseRepository.playerAverageModelList
+    fun getPlayerAverageModels(): List<NBAPlayer> {
+        return databaseRepository.getAllPlayerData()
+    }
+
+    fun saveAllPlayers(nbaPlayers: List<NBAPlayer>) {
+        databaseRepository.addAllPlayerData(nbaPlayers)
     }
 
     companion object {

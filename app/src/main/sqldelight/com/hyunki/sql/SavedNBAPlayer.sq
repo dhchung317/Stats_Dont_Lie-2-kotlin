@@ -1,4 +1,4 @@
-CREATE TABLE NBAPlayer (
+CREATE TABLE SavedNBAPlayer (
     playerID INTEGER NOT NULL UNIQUE PRIMARY KEY,
     firstName TEXT NOT NULL,
     lastName TEXT NOT NULL,
@@ -12,10 +12,10 @@ CREATE TABLE NBAPlayer (
     );
 
 selectAll:
-SELECT * FROM NBAPlayer;
+SELECT * FROM SavedNBAPlayer;
 
 insertOrReplace:
-INSERT OR REPLACE INTO NBAPlayer(
+INSERT OR REPLACE INTO SavedNBAPlayer(
     playerID,
     firstName,
     lastName,
@@ -33,7 +33,7 @@ VALUES(?,?,?,?,?,?,?,?,?,?);
 
 
 selectById:
-SELECT * FROM NBAPlayer WHERE playerID = ?;
+SELECT * FROM SavedNBAPlayer WHERE playerID = ?;
 
 
 
