@@ -125,7 +125,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun setViewModel() {
-        viewModel = ViewModelProvider(requireActivity(),viewModelProviderFactory).get(NewViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelProviderFactory).get(NewViewModel::class.java)
         //        viewModel.callBDLResponseClient();
     }
 
@@ -144,17 +144,37 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         playerTwoTextView.text = NBAPlayer2.firstName
         Log.d(TAG, "setViews: $NBAPlayer1")
         Log.d(TAG, "setViews: $NBAPlayer2")
-        Picasso.get()
-                .load(PlayerUtil.getPlayerPhotoUrl(NBAPlayer1.firstName, NBAPlayer1.lastName))
-                .into(playerOneImage)
-        Picasso.get()
-                .load(PlayerUtil.getPlayerPhotoUrl(NBAPlayer2.firstName, NBAPlayer2.lastName))
-                .into(playerTwoImage)
+
+        setPlayerOneImage()
+        setPlayerTwoImage()
+
         randomQuestion
         //        playerOneCardView.startAnimation(Animations.getFadeIn(playerOneCardView));
 //        playerTwoCardView.startAnimation(Animations.getFadeIn(playerTwoCardView));
         playerOneStatTextView.text = DecimalFormat("#.#").format(NBAPlayer1.getStat(randomQuestionPosition))
         playerTwoStatTextView.text = DecimalFormat("#.#").format(NBAPlayer2.getStat(randomQuestionPosition))
+    }
+
+    private fun setPlayerOneImage() {
+        val bitmap = viewModel.getImageFromDatabase(NBAPlayer1.playerID.toInt())
+        if(bitmap != null){
+            playerOneImage.setImageBitmap(bitmap)
+        }else{
+            Picasso.get()
+                    .load(PlayerUtil.getPlayerPhotoUrl(NBAPlayer1.firstName, NBAPlayer1.lastName))
+                    .into(playerOneImage)
+        }
+    }
+
+    private fun setPlayerTwoImage() {
+        val bitmap = viewModel.getImageFromDatabase(NBAPlayer2.playerID.toInt())
+        if(bitmap != null){
+            playerTwoImage.setImageBitmap(bitmap)
+        }else{
+            Picasso.get()
+                    .load(PlayerUtil.getPlayerPhotoUrl(NBAPlayer1.firstName, NBAPlayer1.lastName))
+                    .into(playerOneImage)
+        }
     }
 
     private fun flipViews() {

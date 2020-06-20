@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     }
 
     override fun setResultsDataFromGameFragment(playerCorrectGuesses: Int, playerIncorrectGuesses: Int) {
-        TODO("Not yet implemented")
+        viewModel.setCorrectGuesses(playerCorrectGuesses)
+        viewModel.setIncorrectGuesses(playerIncorrectGuesses)
     }
 
     private fun processResponse(res: ResponseState) {

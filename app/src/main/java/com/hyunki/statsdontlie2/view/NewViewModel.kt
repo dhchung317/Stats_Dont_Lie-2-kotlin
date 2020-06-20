@@ -1,5 +1,6 @@
 package com.hyunki.statsdontlie2.view
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
@@ -9,6 +10,7 @@ import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.network.ResponseState
 import com.hyunki.statsdontlie2.repository.Repository
 import com.hyunki.statsdontlie2.utils.GameStatUtil
+import com.hyunki.statsdontlie2.utils.ImageUtil
 import com.hyunki.statsdontlie2.utils.PlayerModelCreator
 import com.hyunki.statsdontlie2.utils.PlayerUtil
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +24,9 @@ import javax.inject.Inject
 
 class NewViewModel @Inject
 constructor(private val databaseRepository: BDLDatabaseRepository, private val repository: Repository) : ViewModel() {
+
+    private var incorrectGuesses: Int = 0
+    private var correctGuesses: Int = 0
 
     fun callBDLResponseClient() = liveData(Dispatchers.IO) {
         emit(ResponseState.Loading)
@@ -48,15 +53,25 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
 
                         val currentPlayer = res.data[0].player
                         Log.d(TAG, "callBDLResponseClient: " + res.data.get(0).pts)
+                        val imgUrl = PlayerUtil.getPlayerPhotoUrl(currentPlayer.first_name, currentPlayer.last_name)
+
+                        withContext(Dispatchers.Default) {
+                            saveImageToDatabase(
+                                    currentPlayer.id,
+                                    ImageUtil.getBitmapAsByteArray(ImageUtil.getBitmapFromURL(imgUrl)))
+                        }
+
                         return@map PlayerModelCreator.createPlayerModel(
                                 currentPlayer.id.toLong(),
                                 currentPlayer.first_name,
                                 currentPlayer.last_name,
-                                PlayerUtil.getPlayerPhotoUrl(currentPlayer.first_name, currentPlayer.last_name),
+                                imgUrl,
                                 gameStatUtil
                         )
                     }.toList()
                 }
+
+
 
                 emit(ResponseState.Success.OnResponsesLoaded(playerAverageModels.await()))
             }
@@ -71,6 +86,21 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
 
     fun saveAllPlayers(nbaPlayers: List<NBAPlayer>) {
         databaseRepository.addAllPlayerData(nbaPlayers)
+    }
+
+    private fun saveImageToDatabase(playerID: Int, image: ByteArray) {
+        databaseRepository.addPlayerImage(playerID, image)
+    }
+
+    fun getImageFromDatabase(playerID: Int): Bitmap? {
+        return databaseRepository.getPlayerImage(playerID)
+    }
+
+    fun setCorrectGuesses(correct: Int){
+        correctGuesses = correct
+    }
+    fun setIncorrectGuesses(incorrect: Int){
+        incorrectGuesses = incorrect
     }
 
     companion object {

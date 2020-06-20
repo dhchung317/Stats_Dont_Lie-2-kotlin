@@ -1,7 +1,9 @@
 package com.hyunki.statsdontlie2.localdb
 
+import android.graphics.Bitmap
 import com.hyunki.statsdontlie2.Database
 import com.hyunki.statsdontlie2.model.NBAPlayer
+import com.hyunki.statsdontlie2.utils.ImageUtil
 
 import javax.inject.Inject
 
@@ -61,6 +63,20 @@ class BDLDatabase @Inject constructor(private val database: Database) {
 //                player.executeAsOne().player3PM!!,
 //                player.executeAsOne().player3PA!!
 //        )
+    }
+
+    fun addPlayerImage(playerId: Int, image: ByteArray?) {
+        database.playerImageQueries
+                .insertOrReplaceImage(
+                java.lang.Long.valueOf(playerId.toLong()),
+                image
+        )
+    }
+
+    fun getPlayerImage(playerId: Int): ByteArray? {
+        return database.playerImageQueries
+                .selectImageById(playerId.toLong())
+                .executeAsOne().image
     }
 
 
