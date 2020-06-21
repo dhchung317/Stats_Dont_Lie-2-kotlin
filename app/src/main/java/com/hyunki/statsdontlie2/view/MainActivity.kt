@@ -1,22 +1,26 @@
 package com.hyunki.statsdontlie2.view
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hyunki.statsdontlie2.BaseApplication
 import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
 import com.hyunki.statsdontlie2.R
+import com.hyunki.statsdontlie2.constants.GameConstants
 import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.network.ResponseState
-import com.hyunki.statsdontlie2.view.fragments.GameFragment
+import com.hyunki.statsdontlie2.view.fragments.game.GameFragment
 import com.hyunki.statsdontlie2.view.fragments.MenuFragment
 import com.hyunki.statsdontlie2.view.fragments.ResultFragment
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
+import java.lang.reflect.Field
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
@@ -37,6 +41,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: NewViewModel
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as BaseApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
@@ -44,6 +49,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         progressBar = findViewById(R.id.progressBar)
         viewModel = ViewModelProvider(this,providerFactory).get(NewViewModel::class.java)
         initViewModel()
+
     }
 
     @SuppressLint("CheckResult")
@@ -87,7 +93,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
             }
             is ResponseState.Success.OnResponsesLoaded -> {
                 NBAPlayers = res.NBAPlayers
-                Log.d(TAG, "processResponse: " + res.NBAPlayers.size)
+
+                val p = NBAPlayers[0]
+                var q = GameConstants.QUESTIONS_ARRAY.random()
 
                 viewModel.saveAllPlayers(res.NBAPlayers)
                 showProgressBar(false)

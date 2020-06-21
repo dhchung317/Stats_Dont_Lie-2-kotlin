@@ -4,7 +4,7 @@ import android.app.Application
 import com.hyunki.statsdontlie2.BaseApplication
 import com.hyunki.statsdontlie2.localdb.di.BDLDatabaseModule
 import com.hyunki.statsdontlie2.view.MainActivity
-import com.hyunki.statsdontlie2.view.fragments.GameFragment
+import com.hyunki.statsdontlie2.view.fragments.game.GameFragment
 import com.hyunki.statsdontlie2.view.fragments.MenuFragment
 import com.hyunki.statsdontlie2.view.fragments.ResultFragment
 import dagger.BindsInstance
