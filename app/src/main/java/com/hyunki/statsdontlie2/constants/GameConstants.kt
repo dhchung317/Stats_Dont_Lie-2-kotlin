@@ -1,8 +1,8 @@
 package com.hyunki.statsdontlie2.constants
 
-object BDLAppConstants {
-    const val BASE_URL = "https://www.balldontlie.io"
-    const val ENDPOINT = "/api/v1/stats"
+import com.hyunki.statsdontlie2.view.fragments.game.utils.Question
+
+object GameConstants {
     const val BDLREPOSITORY_TAG = "BDLRepository"
     const val MAIN_ACTIVITY_TAG = "MainActivity"
     const val EXAMPLE_UNIT_TEST_TAG = "ExampleUnitTest"
@@ -39,16 +39,18 @@ object BDLAppConstants {
     private const val JRUE_HOLIDAY = 214
     private const val D_ANGELO_RUSSELL = 405
     private const val MIKE_CONLEY = 104
+
     val PLAYER_ARRAY_CONSTANTS = intArrayOf(JAMES_HARDEN, PAUL_GEORGE,
             GIANNIS_ANTETOKOUNMPO, JOEL_EMBIID, STEPHEN_CURRY, KAWHI_LEONARD, DEVIN_BOOKER,
             KEVIN_DURANT, DAMIAN_LILLARD, KEMBA_WALKER, BRADLEY_BEAL, BLAKE_GRIFFIN, KARL_ANTHONY_TOWNS,
             KYRIE_IRVING, DONOVAN_MITCHELL, ZACH_LAVINE, RUSSELL_WESTBROOK, KLAY_THOMPSON,
             JULIUS_RANDLE, LAMARCUS_ALDRIDGE, DEMAR_DEROZAN, LEBRON_JAMES, JRUE_HOLIDAY, D_ANGELO_RUSSELL)
-    val QUESTIONS_ARRAY = arrayOf<String?>(
-            "Who has a higher point-per-game average?",
-            "Who has a higher assist-per-game average?",
-            "Who averages more blocks per game?",
-            "Who averages more defensive rebounds per game?",
-            "Who makes more 3 point shots on average?",
-            "Who attempts more 3 point shots on average?")
+
+    val QUESTIONS_ARRAY = arrayOf<Question>(
+            Question("playerPointAvg","Who has a higher point-per-game average?"),
+            Question("playerAssistAvg","Who has a higher assist-per-game average?"),
+            Question("playerBlocksAvg","Who averages more blocks per game?"),
+            Question("playerDefRebAvg","Who averages more defensive rebounds per game?"),
+            Question("player3PM","Who makes more 3 point shots on average?"),
+            Question("player3PA","Who attempts more 3 point shots on average?"))
 }

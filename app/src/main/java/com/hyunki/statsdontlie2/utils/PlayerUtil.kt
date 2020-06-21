@@ -30,6 +30,6 @@ object PlayerUtil {
 
     private fun isValidFullName(firstName: String,
                                 lastName: String): Boolean {
-        return firstName != null && lastName != null && firstName != "" && lastName != ""
+        return firstName != "" && lastName != ""
     }
 }

@@ -18,6 +18,7 @@ class GameJudger(private val NBAPlayer1: NBAPlayer,
         }
 
     private fun playerPointAvgComp(): Boolean {
+
         return if (NBAPlayer1.playerPointAvg > NBAPlayer2.playerPointAvg &&
                 playerChoice == 1) {
             true

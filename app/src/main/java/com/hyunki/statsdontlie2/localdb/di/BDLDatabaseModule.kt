@@ -10,7 +10,6 @@ import dagger.Provides
 
 @Module
 class BDLDatabaseModule {
-
     @Provides
     fun provideBDLDatabase(application: Application): BDLDatabase {
         val sqlDriver: SqlDriver = AndroidSqliteDriver(Database.Schema, application.applicationContext, "BDL.db")
