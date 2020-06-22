@@ -1,17 +1,19 @@
 package com.hyunki.statsdontlie2.view.fragments.game
 
+import android.animation.*
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hyunki.statsdontlie2.Animations
@@ -24,10 +26,6 @@ import com.hyunki.statsdontlie2.view.NewViewModel
 import com.hyunki.statsdontlie2.view.fragments.game.controller.GameCommandsListener
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 import javax.inject.Inject
 
@@ -79,7 +77,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         nbaPlayers = viewModel.getPlayerAverageModels()
         gameManager = GameManager(nbaPlayers, this, listener)
         runGame()
-
     }
 
     private fun findViews(view: View) {
@@ -95,25 +92,23 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         countDownView = view.findViewById(R.id.count_down_timer)
         incorrect = view.findViewById(R.id.wrong)
         correct = view.findViewById(R.id.right)
-        //        handler = new Handler();
-//        handler2 = new Handler();
     }
 
     private fun setCountDownTimer() {
-        countDownTimer = object : CountDownTimer(20000, 1000) {
+        countDownTimer = object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 countDownView.text = (millisUntilFinished / 1000).toString()
             }
 
+            @RequiresApi(Build.VERSION_CODES.N)
             override fun onFinish() {
-//                playerOneCardView.clearAnimation();
-//                playerTwoCardView.clearAnimation();
-//                incorrect.clearAnimation();
-//                correct.clearAnimation();
-//                handler.removeCallbacksAndMessages(null);
-//                handler2.removeCallbacksAndMessages(null);
+                playerOneCardView.clearAnimation();
+                playerTwoCardView.clearAnimation();
+                incorrect.clearAnimation();
+                correct.clearAnimation();
 
                 listener.displayResultFragment()
+                gameManager.setResults()
             }
         }
         countDownTimer.start()
@@ -123,10 +118,24 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         viewModel = ViewModelProvider(requireActivity(), viewModelProviderFactory).get(NewViewModel::class.java)
     }
 
-    private fun setViews() {
+    private fun setViewsWithGameData() {
         val data = gameManager.getRoundData()
         val p1 = data.getPlayer1()
         val p2 = data.getPlayer2()
+
+
+
+        if (isNameLengthTooLong(p1.firstName)) {
+            playerOneTextView.textSize = 34f
+        } else {
+            playerOneTextView.textSize = 36f
+        }
+
+        if (isNameLengthTooLong(p2.firstName)) {
+            playerTwoTextView.textSize = 34f
+        } else {
+            playerTwoTextView.textSize = 36f
+        }
 
         playerOneTextView.text = data.getPlayer1().firstName
         playerTwoTextView.text = data.getPlayer2().firstName
@@ -136,8 +145,21 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
         displayQuestionTextView.text = gameManager.getRoundData().question.question
 
+        toggleStatView(false)
+        playerOneStatTextView.setTextColor(resources.getColor(R.color.colorBlack))
+        playerTwoStatTextView.setTextColor(resources.getColor(R.color.colorBlack))
         playerOneStatTextView.text = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer1Stat())
         playerTwoStatTextView.text = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer2Stat())
+    }
+
+    private fun toggleStatView(showStat: Boolean) {
+        if(showStat){
+            playerOneStatTextView.visibility = View.VISIBLE
+            playerTwoStatTextView.visibility = View.VISIBLE
+        }else{
+            playerOneStatTextView.visibility = View.INVISIBLE
+            playerTwoStatTextView.visibility = View.INVISIBLE
+        }
     }
 
     private fun setPlayerOneImage(p1: NBAPlayer) {
@@ -163,83 +185,75 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun flipViews() {
-        val flip = AnimationUtils.loadAnimation(activity, R.anim.card)
-        val flipTwo = AnimationUtils.loadAnimation(activity, R.anim.card)
+        val pTop = requireActivity().window.decorView.bottom
+        val set1 = Animations.getCardFlipAnimation(playerOneCardView, pTop)
+        val set2 = Animations.getCardFlipAnimation(playerTwoCardView, pTop)
 
-        playerOneCardView.startAnimation(flip);
-        playerOneCardView.setClickable(false);
-        playerTwoCardView.setClickable(false);
-        val timer: CountDownTimer = object : CountDownTimer(2000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {}
-            override fun onFinish() {
-//                reloadPlayersAndViews()
-//                runGame()
-                gameManager.finishRound()
+        set1.start()
 
+        set1.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                set2.start()
             }
-        }
-        timer.start()
-
-        flip.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                playerTwoCardView.startAnimation(flipTwo);
-            }
-
-            override fun onAnimationStart(animation: Animation?) {
-
-            }
-
         })
 
+        set2.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                toggleStatView(true)
+                playerOneImage.alpha = .4f
+                playerTwoImage.alpha = .4f
 
-        flipTwo.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
+                if (this@GameFragment.isVisible) {
+                    Handler().postDelayed({
+                        playerOneCardView.startAnimation(Animations.getFadeOut(playerOneCardView));
+                        playerTwoCardView.startAnimation(Animations.getFadeOut(playerTwoCardView));
+                    }, 900)
 
                     Handler().postDelayed({
-                        if ((parentFragmentManager.findFragmentByTag("game") != null) &&
-                                parentFragmentManager.findFragmentByTag("game")!!.isVisible) {
-                            playerOneCardView.startAnimation(Animations.getFadeOut(playerOneCardView));
-                            playerTwoCardView.startAnimation(Animations.getFadeOut(playerTwoCardView));
-                        }
-                        },900)
+                        playerOneImage.alpha = 1f
+                        playerTwoImage.alpha = 1f
+                        gameManager.finishRound()
+                    }, 1200)
+                }
             }
-
-
-            override fun onAnimationStart(animation: Animation?) {
-
-            }
-
         })
-
     }
 
-    private fun setPlayer1CardView() {
+    private fun setPlayer1CardViewOnClick() {
         playerOneCardView.setOnClickListener { v: View? ->
+            playerOneCardView.isClickable = false
+            playerTwoCardView.isClickable = false
             val check = gameManager.getRoundData().getPlayer1() == gameManager.getRoundData().getAnswer()
             roundResults(check)
-            playBooleanAnimation(check)
+            playCheckerAnimation(check)
+            animateStatView(check,playerOneStatTextView)
             flipViews()
         }
     }
 
-    private fun setPlayer2CardView() {
+    private fun setPlayer2CardViewOnClick() {
         playerTwoCardView.setOnClickListener { v: View? ->
+            playerOneCardView.isClickable = false
+            playerTwoCardView.isClickable = false
             val check = gameManager.getRoundData().getPlayer2() == gameManager.getRoundData().getAnswer()
             roundResults(check)
-            playBooleanAnimation(check)
+            playCheckerAnimation(check)
+            animateStatView(check,playerTwoStatTextView)
             flipViews()
         }
     }
 
-    private fun playBooleanAnimation(check: Boolean) {
+    private fun animateStatView(isCorrect: Boolean, textView: TextView){
+        if(isCorrect){
+            textView.setTextColor(
+                    resources.getColor(R.color.colorGreen))
+        }else{
+            textView.setTextColor(
+                    resources.getColor(R.color.colorErrorRed))
+        }
+    }
+
+    private fun playCheckerAnimation(check: Boolean) {
         if (check) {
             correct.startAnimation(Animations.getChecker(correct))
         } else {
@@ -261,14 +275,18 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     override fun runGame() {
-        setViews()
+        setViewsWithGameData()
         playerOneCardView.startAnimation(Animations.getFadeIn(playerOneCardView))
         playerTwoCardView.startAnimation(Animations.getFadeIn(playerTwoCardView))
-        setPlayer1CardView()
-        setPlayer2CardView()
+        setPlayer1CardViewOnClick()
+        setPlayer2CardViewOnClick()
     }
 
     override fun runClock() {
         setCountDownTimer()
+    }
+
+    private fun isNameLengthTooLong(name: String): Boolean {
+        return name.length > 8
     }
 }

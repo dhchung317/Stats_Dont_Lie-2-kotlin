@@ -4,5 +4,5 @@ interface OnFragmentInteractionListener {
     fun displayMenuFragment()
     fun displayGameFragment()
     fun displayResultFragment()
-    fun setResultsDataFromGameFragment(playerCorrectGuesses: Int, playerIncorrectGuesses: Int)
+    fun setResultsDataFromGameManager(playerCorrectGuesses: Int, playerIncorrectGuesses: Int)
 }

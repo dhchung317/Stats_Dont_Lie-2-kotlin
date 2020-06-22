@@ -14,4 +14,5 @@
     <string name="higher_fgp">Who has a higher field-goal-percentage?</string>
     <string name="higher_rpg">Who averages more rebound per game?</string>
     <string name="higher_ftp">Who has a higher point-per-game average?</string>
+    <string name="saved_network_call_preference_key">saved network call preference key</string>
 </resources>

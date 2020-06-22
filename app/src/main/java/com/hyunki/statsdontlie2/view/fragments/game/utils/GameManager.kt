@@ -1,5 +1,7 @@
 package com.hyunki.statsdontlie2.view.fragments.game.utils
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.hyunki.statsdontlie2.constants.GameConstants
 import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
 import com.hyunki.statsdontlie2.view.fragments.game.controller.GameCommandsListener
@@ -35,7 +37,7 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
         gameData = GameRoundData(getRandomTwo(), GameConstants.QUESTIONS_ARRAY.random())
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.N)
     fun finishRound() {
         gameBundle.addGameData(gameData)
         if (playersLeft.size > 2) {
@@ -46,16 +48,17 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun finishGame() {
         listener.displayResultFragment()
+        setResults()
     }
 
-
-    fun runGame() {
+    private fun runGame() {
         gameCommandsListener.runGame()
     }
 
-    fun runClock() {
+    private fun runClock() {
         gameCommandsListener.runClock()
     }
 
@@ -70,4 +73,23 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
             gameData.setCorrect(false)
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun calculateResultsFromGameBundle(gameBundle: GameRoundBundle):Result {
+        val dataList = gameBundle.getRoundDataList()
+        val correct = dataList.stream()
+                .map { it.isCorrect() }.filter { it == true }.count().toInt()
+        val incorrect = dataList.size - correct
+
+        return Result(incorrect = incorrect, correct = correct)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun setResults(){
+        val results = calculateResultsFromGameBundle(gameBundle)
+        listener.setResultsDataFromGameManager(
+                playerCorrectGuesses = results.correct, playerIncorrectGuesses = results.incorrect)
+    }
+
+    data class Result(val incorrect: Int, val correct: Int)
 }

@@ -25,8 +25,8 @@ class MenuFragment @Inject constructor(private val viewModelProviderFactory: Vie
         if (context is OnFragmentInteractionListener) {
             listener = context
         }
-        if (fragmentManager!!.findFragmentByTag("game") != null) {
-            fragmentManager!!.beginTransaction().remove(fragmentManager!!.findFragmentByTag("game")!!)
+        if (parentFragmentManager.findFragmentByTag("game") != null) {
+            parentFragmentManager.beginTransaction().remove(parentFragmentManager.findFragmentByTag("game")!!)
         }
     }
 
@@ -39,13 +39,4 @@ class MenuFragment @Inject constructor(private val viewModelProviderFactory: Vie
         playButton = view.findViewById(R.id.play_button)
         playButton.setOnClickListener(View.OnClickListener { v: View? -> listener!!.displayGameFragment() })
     }
-
-//    fun showProgressDialog() {
-//        progressDialog = ProgressDialog(context)
-//        progressDialog!!.setMessage("Loading...")
-//        progressDialog!!.setTitle("Download")
-//        progressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-//        progressDialog!!.setCanceledOnTouchOutside(false)
-//        progressDialog!!.show()
-//    }
 }
