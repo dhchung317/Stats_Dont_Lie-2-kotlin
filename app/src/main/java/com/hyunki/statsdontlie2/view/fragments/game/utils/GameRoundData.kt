@@ -2,7 +2,7 @@ package com.hyunki.statsdontlie2.view.fragments.game.utils
 
 import com.hyunki.statsdontlie2.model.NBAPlayer
 
-class GameRoundData(private val pair: Pair<NBAPlayer, NBAPlayer>, val question: Question) {
+class GameRoundData(pair: Pair<NBAPlayer, NBAPlayer>, val question: Question) {
     private lateinit var answer: NBAPlayer
     private var isCorrect: Boolean = false
 

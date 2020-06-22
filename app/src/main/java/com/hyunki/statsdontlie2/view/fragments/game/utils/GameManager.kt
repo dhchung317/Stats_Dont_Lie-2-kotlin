@@ -24,12 +24,8 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
 
     private fun getRandomTwo(): Pair<NBAPlayer, NBAPlayer> {
         val playerOne = playersLeft.random()
-        playersLeft.remove(playerOne)
         val playerTwo = playersLeft.random()
-        playersLeft.remove(playerTwo)
-
         shuffleList()
-
         return Pair(playerOne, playerTwo)
     }
 
@@ -40,18 +36,8 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
     @RequiresApi(Build.VERSION_CODES.N)
     fun finishRound() {
         gameBundle.addGameData(gameData)
-        if (playersLeft.size > 2) {
-            setUpGameManager()
-            runGame()
-        } else {
-            finishGame()
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun finishGame() {
-        listener.displayResultFragment()
-        setResults()
+        setUpGameManager()
+        runGame()
     }
 
     private fun runGame() {
@@ -75,17 +61,16 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun calculateResultsFromGameBundle(gameBundle: GameRoundBundle):Result {
+    fun calculateResultsFromGameBundle(gameBundle: GameRoundBundle): Result {
         val dataList = gameBundle.getRoundDataList()
         val correct = dataList.stream()
                 .map { it.isCorrect() }.filter { it == true }.count().toInt()
         val incorrect = dataList.size - correct
-
         return Result(incorrect = incorrect, correct = correct)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun setResults(){
+    fun setResults() {
         val results = calculateResultsFromGameBundle(gameBundle)
         listener.setResultsDataFromGameManager(
                 playerCorrectGuesses = results.correct, playerIncorrectGuesses = results.incorrect)

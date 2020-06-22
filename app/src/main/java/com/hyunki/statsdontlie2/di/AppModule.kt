@@ -28,7 +28,6 @@ class AppModule {
                 .readTimeout(100, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
                 .addInterceptor(interceptor).build()
-
         return Retrofit.Builder()
                 .baseUrl(NetworkConstants.BASE_URL).client(client)
                 .addConverterFactory(GsonConverterFactory.create())

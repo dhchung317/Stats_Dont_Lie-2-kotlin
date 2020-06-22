@@ -37,6 +37,7 @@ object Animations {
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationEnd(animation: Animation) {
                 v.isClickable = true
+                v.isEnabled = true
             }
             override fun onAnimationRepeat(animation: Animation) {}
         })
@@ -48,6 +49,7 @@ object Animations {
         fadeOut.setAnimationListener(object : AnimationListener {
             override fun onAnimationStart(animation: Animation) {
                 v.isClickable = false
+                v.isEnabled = false
             }
             override fun onAnimationEnd(animation: Animation) {}
             override fun onAnimationRepeat(animation: Animation) {}

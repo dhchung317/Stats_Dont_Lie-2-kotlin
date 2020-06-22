@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hyunki.statsdontlie2.Animations
@@ -79,6 +78,23 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         runGame()
     }
 
+    override fun runGame() {
+        setViewsWithGameData()
+        playerOneCardView.startAnimation(Animations.getFadeIn(playerOneCardView))
+        playerTwoCardView.startAnimation(Animations.getFadeIn(playerTwoCardView))
+        setPlayer1CardViewOnClick()
+        setPlayer2CardViewOnClick()
+    }
+
+    override fun runClock() {
+        setCountDownTimer()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        countDownTimer.cancel()
+    }
+
     private fun findViews(view: View) {
         playerOneCardView = view.findViewById(R.id.player_one)
         playerTwoCardView = view.findViewById(R.id.player_two)
@@ -137,8 +153,8 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         playerOneTextView.text = data.getPlayer1().firstName
         playerTwoTextView.text = data.getPlayer2().firstName
 
-        setPlayerOneImage(p1)
-        setPlayerTwoImage(p2)
+        setPlayerImage(p1, 1)
+        setPlayerImage(p2, 2)
 
         displayQuestionTextView.text = gameManager.getRoundData().question.question
 
@@ -150,44 +166,37 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun toggleStatView(showStat: Boolean) {
-        if(showStat){
+        if (showStat) {
             playerOneStatTextView.visibility = View.VISIBLE
             playerTwoStatTextView.visibility = View.VISIBLE
-        }else{
+        } else {
             playerOneStatTextView.visibility = View.INVISIBLE
             playerTwoStatTextView.visibility = View.INVISIBLE
         }
     }
 
-    private fun setPlayerOneImage(p1: NBAPlayer) {
-        val bitmap = viewModel.getImageFromDatabase(p1.playerID.toInt())
-        if (bitmap != null) {
-            playerOneImage.setImageBitmap(bitmap)
-        } else {
-            Picasso.get()
-                    .load(PlayerUtil.getPlayerPhotoUrl(p1.firstName, p1.lastName))
-                    .into(playerOneImage)
+    private fun setPlayerImage(player: NBAPlayer, number: Int) {
+        lateinit var imageView: ImageView
+        when(number) {
+            1 -> imageView = playerOneImage
+            2 -> imageView = playerTwoImage
         }
-    }
-
-    private fun setPlayerTwoImage(p2: NBAPlayer) {
-        val bitmap = viewModel.getImageFromDatabase(p2.playerID.toInt())
+        val bitmap = viewModel.getImageFromDatabase(player.playerID.toInt())
         if (bitmap != null) {
-            playerTwoImage.setImageBitmap(bitmap)
+            imageView.setImageBitmap(bitmap)
         } else {
             Picasso.get()
-                    .load(PlayerUtil.getPlayerPhotoUrl(p2.firstName, p2.lastName))
-                    .into(playerOneImage)
+                    .load(PlayerUtil.getPlayerPhotoUrl(player.firstName, player.lastName))
+                    .into(imageView)
         }
     }
 
     private fun flipViews() {
-        val pTop = requireActivity().window.decorView.bottom
-        val set1 = Animations.getCardFlipAnimation(playerOneCardView, pTop)
-        val set2 = Animations.getCardFlipAnimation(playerTwoCardView, pTop)
+        val pBottom = requireActivity().window.decorView.bottom
+        val set1 = Animations.getCardFlipAnimation(playerOneCardView, pBottom)
+        val set2 = Animations.getCardFlipAnimation(playerTwoCardView, pBottom)
 
         set1.start()
-
         set1.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 set2.start()
@@ -195,6 +204,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         })
 
         set2.addListener(object : AnimatorListenerAdapter() {
+            @RequiresApi(Build.VERSION_CODES.N)
             override fun onAnimationEnd(animation: Animator?) {
                 toggleStatView(true)
                 playerOneImage.alpha = .4f
@@ -223,7 +233,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             val check = gameManager.getRoundData().getPlayer1() == gameManager.getRoundData().getAnswer()
             roundResults(check)
             playCheckerAnimation(check)
-            animateStatView(check,playerOneStatTextView)
+            animateStatView(check, playerOneStatTextView)
             flipViews()
         }
     }
@@ -235,16 +245,16 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             val check = gameManager.getRoundData().getPlayer2() == gameManager.getRoundData().getAnswer()
             roundResults(check)
             playCheckerAnimation(check)
-            animateStatView(check,playerTwoStatTextView)
+            animateStatView(check, playerTwoStatTextView)
             flipViews()
         }
     }
 
-    private fun animateStatView(isCorrect: Boolean, textView: TextView){
-        if(isCorrect){
+    private fun animateStatView(isCorrect: Boolean, textView: TextView) {
+        if (isCorrect) {
             textView.setTextColor(
                     resources.getColor(R.color.colorGreen))
-        }else{
+        } else {
             textView.setTextColor(
                     resources.getColor(R.color.colorErrorRed))
         }
@@ -262,28 +272,11 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         gameManager.checkAnswer(isRightPlayer)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        countDownTimer.cancel()
+    private fun isNameLengthTooLong(name: String): Boolean {
+        return name.length > 8
     }
 
     companion object {
         private const val TAG = "GameFragment"
-    }
-
-    override fun runGame() {
-        setViewsWithGameData()
-        playerOneCardView.startAnimation(Animations.getFadeIn(playerOneCardView))
-        playerTwoCardView.startAnimation(Animations.getFadeIn(playerTwoCardView))
-        setPlayer1CardViewOnClick()
-        setPlayer2CardViewOnClick()
-    }
-
-    override fun runClock() {
-        setCountDownTimer()
-    }
-
-    private fun isNameLengthTooLong(name: String): Boolean {
-        return name.length > 8
     }
 }
