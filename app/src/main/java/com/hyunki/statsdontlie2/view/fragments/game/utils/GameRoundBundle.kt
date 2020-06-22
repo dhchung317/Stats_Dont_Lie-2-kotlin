@@ -6,7 +6,6 @@ class GameRoundBundle {
     fun addGameData(data: GameRoundData) {
         rounds.add(data)
     }
-
     fun getRoundDataList(): List<GameRoundData>{
         return rounds
     }

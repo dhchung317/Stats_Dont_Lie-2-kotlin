@@ -8,7 +8,7 @@ import com.hyunki.statsdontlie2.view.fragments.game.controller.GameCommandsListe
 import com.hyunki.statsdontlie2.model.NBAPlayer
 
 class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener: GameCommandsListener, private val listener: OnFragmentInteractionListener) {
-    private val playersLeft = gameRoster.toMutableList()
+    private val playersList = gameRoster.toMutableList()
 
     private val gameBundle = GameRoundBundle()
     private lateinit var gameData: GameRoundData
@@ -19,12 +19,15 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
     }
 
     private fun shuffleList() {
-        playersLeft.shuffle()
+        playersList.shuffle()
     }
 
     private fun getRandomTwo(): Pair<NBAPlayer, NBAPlayer> {
-        val playerOne = playersLeft.random()
-        val playerTwo = playersLeft.random()
+        val playerOne = playersList.random()
+        var playerTwo = playersList.random()
+        while(playerOne == playerTwo){
+            playerTwo = playersList.random()
+        }
         shuffleList()
         return Pair(playerOne, playerTwo)
     }

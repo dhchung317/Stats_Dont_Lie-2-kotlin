@@ -26,7 +26,6 @@ import java.lang.reflect.Field
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
-
     @Inject
     lateinit var menuFragment: MenuFragment
     @Inject
