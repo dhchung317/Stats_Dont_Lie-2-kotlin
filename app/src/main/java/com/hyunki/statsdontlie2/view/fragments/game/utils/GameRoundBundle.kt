@@ -10,5 +10,4 @@ class GameRoundBundle {
     fun getRoundDataList(): List<GameRoundData>{
         return rounds
     }
-
 }

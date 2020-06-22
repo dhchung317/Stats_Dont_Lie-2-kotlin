@@ -1,6 +1,8 @@
 package com.hyunki.statsdontlie2.view
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -37,7 +39,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
-    private lateinit var NBAPlayers: List<NBAPlayer>
     private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: NewViewModel
 
@@ -48,8 +49,14 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         setContentView(R.layout.activity_main)
         progressBar = findViewById(R.id.progressBar)
         viewModel = ViewModelProvider(this,providerFactory).get(NewViewModel::class.java)
-        initViewModel()
 
+        val networkSharedPreference = getPreferences(Context.MODE_PRIVATE).getBoolean(getString(R.string.saved_network_call_preference_key),false)
+
+        if(!networkSharedPreference){
+            initViewModel()
+        } else {
+            displayMenuFragment()
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -81,7 +88,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
                 .commit()
     }
 
-    override fun setResultsDataFromGameFragment(playerCorrectGuesses: Int, playerIncorrectGuesses: Int) {
+    override fun setResultsDataFromGameManager(playerCorrectGuesses: Int, playerIncorrectGuesses: Int) {
         viewModel.setCorrectGuesses(playerCorrectGuesses)
         viewModel.setIncorrectGuesses(playerIncorrectGuesses)
     }
@@ -92,12 +99,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
                 showProgressBar(true)
             }
             is ResponseState.Success.OnResponsesLoaded -> {
-                NBAPlayers = res.NBAPlayers
-
-                val p = NBAPlayers[0]
-                var q = GameConstants.QUESTIONS_ARRAY.random()
-
                 viewModel.saveAllPlayers(res.NBAPlayers)
+                addSharedPreferenceForNetworkCall()
                 showProgressBar(false)
                 displayMenuFragment()
             }
@@ -116,8 +119,15 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         }
     }
 
+    private fun addSharedPreferenceForNetworkCall(){
+        val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putBoolean(getString(R.string.saved_network_call_preference_key), true)
+            commit()
+        }
+    }
+
     companion object {
         const val TAG = "main-activity"
     }
-
 }
