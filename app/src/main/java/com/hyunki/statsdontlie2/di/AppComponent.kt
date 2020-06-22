@@ -39,5 +39,4 @@ interface AppComponent {
     fun inject(gameFragment: GameFragment)
     fun inject(menuFragment: MenuFragment)
     fun inject(resultFragment: ResultFragment)
-
 }

@@ -43,7 +43,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideBDLDatabaseRepository(database: BDLDatabase):BDLDatabaseRepository {
+    fun provideBDLDatabaseRepository(database: BDLDatabase): BDLDatabaseRepository {
         return BDLDatabaseRepositoryImpl(database)
     }
 

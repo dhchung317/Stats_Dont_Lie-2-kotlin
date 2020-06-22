@@ -9,6 +9,4 @@ class RepositoryImpl
 @Inject constructor(private val service: BDLService) : Repository {
     @SuppressLint("CheckResult")
     override suspend fun callBDLResponseClient(playerId: Int): BDLResponse = service.getPlayerData(playerId, 2018, 100)
-
-
 }

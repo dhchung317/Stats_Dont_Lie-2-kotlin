@@ -20,15 +20,15 @@ class BDLDatabaseRepositoryImpl @Inject constructor(private val bdlDatabase: BDL
         return bdlDatabase.getPlayerById(playerID)
     }
 
-    override fun addPlayerImage(playerId: Int, image: ByteArray) {
-        bdlDatabase.addPlayerImage(playerId, image)
+    override fun addPlayerImage(playerID: Int, image: ByteArray) {
+        bdlDatabase.addPlayerImage(playerID, image)
     }
 
-    override fun getPlayerImage(playerId: Int): Bitmap? {
+    override fun getPlayerImage(playerID: Int): Bitmap? {
         return BitmapFactory.decodeByteArray(
-                bdlDatabase.getPlayerImage(playerId),
+                bdlDatabase.getPlayerImage(playerID),
                 0,
-                bdlDatabase.getPlayerImage(playerId)!!.size
+                bdlDatabase.getPlayerImage(playerID)!!.size
         )
     }
 }

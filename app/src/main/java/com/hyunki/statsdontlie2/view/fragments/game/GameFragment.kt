@@ -106,7 +106,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
                 playerTwoCardView.clearAnimation();
                 incorrect.clearAnimation();
                 correct.clearAnimation();
-
                 listener.displayResultFragment()
                 gameManager.setResults()
             }
@@ -122,8 +121,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         val data = gameManager.getRoundData()
         val p1 = data.getPlayer1()
         val p2 = data.getPlayer2()
-
-
 
         if (isNameLengthTooLong(p1.firstName)) {
             playerOneTextView.textSize = 34f
