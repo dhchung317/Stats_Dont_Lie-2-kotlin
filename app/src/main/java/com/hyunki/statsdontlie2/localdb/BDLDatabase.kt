@@ -64,9 +64,9 @@ class BDLDatabase @Inject constructor(private val database: Database) {
     fun addPlayerImage(playerId: Int, image: ByteArray?) {
         database.playerImageQueries
                 .insertOrReplaceImage(
-                java.lang.Long.valueOf(playerId.toLong()),
-                image
-        )
+                        java.lang.Long.valueOf(playerId.toLong()),
+                        image
+                )
     }
 
     fun getPlayerImage(playerId: Int): ByteArray? {
@@ -74,6 +74,4 @@ class BDLDatabase @Inject constructor(private val database: Database) {
                 .selectImageById(playerId.toLong())
                 .executeAsOne().image
     }
-
-
 }

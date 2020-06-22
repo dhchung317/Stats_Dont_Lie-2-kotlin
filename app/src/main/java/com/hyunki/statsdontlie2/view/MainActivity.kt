@@ -26,16 +26,12 @@ import java.lang.reflect.Field
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
-
     @Inject
     lateinit var menuFragment: MenuFragment
-
     @Inject
     lateinit var gameFragment: GameFragment
-
     @Inject
     lateinit var resultFragment: ResultFragment
-
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 

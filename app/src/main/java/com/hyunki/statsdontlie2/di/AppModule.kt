@@ -28,7 +28,6 @@ class AppModule {
                 .readTimeout(100, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
                 .addInterceptor(interceptor).build()
-
         return Retrofit.Builder()
                 .baseUrl(NetworkConstants.BASE_URL).client(client)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -43,7 +42,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideBDLDatabaseRepository(database: BDLDatabase):BDLDatabaseRepository {
+    fun provideBDLDatabaseRepository(database: BDLDatabase): BDLDatabaseRepository {
         return BDLDatabaseRepositoryImpl(database)
     }
 

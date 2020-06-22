@@ -2,12 +2,10 @@ package com.hyunki.statsdontlie2
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.os.Build
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
-import android.view.animation.Animation.REVERSE
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
 
@@ -39,6 +37,7 @@ object Animations {
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationEnd(animation: Animation) {
                 v.isClickable = true
+                v.isEnabled = true
             }
             override fun onAnimationRepeat(animation: Animation) {}
         })
@@ -50,14 +49,13 @@ object Animations {
         fadeOut.setAnimationListener(object : AnimationListener {
             override fun onAnimationStart(animation: Animation) {
                 v.isClickable = false
+                v.isEnabled = false
             }
-
             override fun onAnimationEnd(animation: Animation) {}
             override fun onAnimationRepeat(animation: Animation) {}
         })
         return fadeOut
     }
-
 
     fun getCardFlipAnimation(v: View, parentTop: Int): AnimatorSet {
         val y = v.y
@@ -78,7 +76,6 @@ object Animations {
 
         val set = AnimatorSet()
         set.playTogether(translate,alpha,rotate)
-
         return set
     }
 }

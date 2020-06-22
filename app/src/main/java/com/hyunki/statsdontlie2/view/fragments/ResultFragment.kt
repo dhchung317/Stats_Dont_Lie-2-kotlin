@@ -52,7 +52,8 @@ class ResultFragment @Inject constructor(private val viewModelProviderFactory: V
         super.onViewCreated(view, savedInstanceState)
         initializeViews(view)
         viewModel = ViewModelProvider(requireActivity(), viewModelProviderFactory).get(NewViewModel::class.java)
-        val concatResults = "Correct Answers: \n${viewModel.getCorrectGuesses()}\n\nWrong Answers: \n${viewModel.getIncorrectGuesses()}"
+        val concatResults
+                = "Correct Answers: \n${viewModel.getCorrectGuesses()}\n\nWrong Answers: \n${viewModel.getIncorrectGuesses()}"
         result.text = concatResults
         clickEvents()
     }

@@ -4,7 +4,6 @@ package com.hyunki.statsdontlie2.utils
  * Last Updated - 9/11/19
  * Last Change By - Eric Diaz
  *
- *
  * A Utility class for getting player photos
  */
 object PlayerUtil {

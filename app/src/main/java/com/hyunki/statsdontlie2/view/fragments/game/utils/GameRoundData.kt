@@ -1,9 +1,8 @@
 package com.hyunki.statsdontlie2.view.fragments.game.utils
 
-import com.hyunki.statsdontlie2.constants.GameConstants
 import com.hyunki.statsdontlie2.model.NBAPlayer
 
-class GameRoundData(private val pair: Pair<NBAPlayer, NBAPlayer>, val question: Question) {
+class GameRoundData(pair: Pair<NBAPlayer, NBAPlayer>, val question: Question) {
     private lateinit var answer: NBAPlayer
     private var isCorrect: Boolean = false
 
@@ -35,7 +34,6 @@ class GameRoundData(private val pair: Pair<NBAPlayer, NBAPlayer>, val question: 
         } else {
             p2
         }
-
         p1Stat = p1.player3PA
         p2Stat = p2.player3PA
     }
@@ -46,7 +44,6 @@ class GameRoundData(private val pair: Pair<NBAPlayer, NBAPlayer>, val question: 
         } else {
             p2
         }
-
         p1Stat = p1.player3PM
         p2Stat = p2.player3PM
     }
@@ -119,13 +116,4 @@ class GameRoundData(private val pair: Pair<NBAPlayer, NBAPlayer>, val question: 
     fun getAnswer(): NBAPlayer {
         return answer
     }
-
-
 }
-
-//0 -> playerPointAvg
-//1 -> playerAssistAvg
-//2 -> playerBlocksAvg
-//3 -> playerDefRebAvg
-//4 -> player3PM
-//5 -> player3PA

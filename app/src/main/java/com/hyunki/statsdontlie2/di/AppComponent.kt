@@ -19,25 +19,17 @@ import javax.inject.Singleton
         ViewModelsModule::class
         ]
 )
-
 @Singleton
 interface AppComponent {
-
     @Component.Builder
     interface Builder {
-
         @BindsInstance
         fun application(application: Application): Builder
-
         fun build(): AppComponent
     }
-
     fun inject(baseApplication: BaseApplication)
-
     fun inject(mainActivity: MainActivity)
-
     fun inject(gameFragment: GameFragment)
     fun inject(menuFragment: MenuFragment)
     fun inject(resultFragment: ResultFragment)
-
 }

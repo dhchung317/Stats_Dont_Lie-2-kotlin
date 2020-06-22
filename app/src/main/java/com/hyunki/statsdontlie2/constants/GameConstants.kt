@@ -3,16 +3,6 @@ package com.hyunki.statsdontlie2.constants
 import com.hyunki.statsdontlie2.view.fragments.game.utils.Question
 
 object GameConstants {
-    const val BDLREPOSITORY_TAG = "BDLRepository"
-    const val MAIN_ACTIVITY_TAG = "MainActivity"
-    const val EXAMPLE_UNIT_TEST_TAG = "ExampleUnitTest"
-
-    //Result Fragment Constants
-    const val CORRECT = "CORRECT"
-    const val WRONG = "WRONG"
-    const val SHARED_PREFS = "com.example.statsdontlie.sharedPrefsKey"
-    const val PLAYER_KEY_SHARED_PREFS = "com.example.statsdontlie.playerAverageModelListKey"
-
     //player_ids for API call
     private const val JAMES_HARDEN = 192
     private const val PAUL_GEORGE = 172
