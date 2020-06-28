@@ -34,12 +34,9 @@ import java.text.DecimalFormat
 import javax.inject.Inject
 
 //TODO work on animations
-//TODO work on ui : placement of name text, edge cases for long names
 //TODO refactor logic between gamemanager and fragment
-//TODO image size is too small
 //TODO results fragment remains in stack
 //TODO exit button in game
-//TODO change right/wrong blinker to one view
 class GameFragment @Inject constructor(private val viewModelProviderFactory: ViewModelProviderFactory) : Fragment(R.layout.fragment_game), GameCommandsListener {
     private val binding by viewBinding(FragmentGameBinding::bind)
 
