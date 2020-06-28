@@ -24,9 +24,9 @@ class PlayerCardView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
     var playerNameLength: Int by observable(initialValue = 0) {_, oldValue, newValue ->
         if(newValue > 8) {
-            playerStatTextView.textSize = 34f
+            playerNameTextView.textSize = 34f
         }else{
-            playerStatTextView.textSize = 36f
+            playerNameTextView.textSize = 36f
         }
     }
     var playerStat: String by observable(initialValue = "") { _, _, newValue: String ->
@@ -46,6 +46,7 @@ class PlayerCardView @JvmOverloads constructor(context: Context, attrs: Attribut
         playerImage = findViewById(R.id.player_card_view_image)
         playerCardView.setCardBackgroundColor(attributes.getColor(
                 R.styleable.PlayerCardView_playerBackground, resources.getColor(R.color.colorRed)))
+//        playerStatTextView.textSize = attributes.getDimension(R.styleable.PlayerCardView_statTextSize, 80f)
         attributes.recycle()
     }
 }

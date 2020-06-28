@@ -25,6 +25,7 @@ import com.hyunki.statsdontlie2.utils.PlayerUtil
 import com.hyunki.statsdontlie2.view.MainViewModel
 import com.hyunki.statsdontlie2.view.fragments.game.controller.GameCommandsListener
 import com.hyunki.statsdontlie2.view.fragments.game.customviews.PlayerCardView
+import com.hyunki.statsdontlie2.view.fragments.game.utils.GameRoundData
 
 import com.hyunki.statsdontlie2.view.viewbinding.viewBinding
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
@@ -40,14 +41,7 @@ import javax.inject.Inject
 //TODO exit button in game
 //TODO change right/wrong blinker to one view
 class GameFragment @Inject constructor(private val viewModelProviderFactory: ViewModelProviderFactory) : Fragment(R.layout.fragment_game), GameCommandsListener {
-
     private val binding by viewBinding(FragmentGameBinding::bind)
-
-    private lateinit var listener: OnFragmentInteractionListener
-
-    private lateinit var gameManager: GameManager
-
-    private val blinkerAnimation by lazy { Animations.getChecker(blinker) }
 
     private lateinit var playerOne: PlayerCardView
     private lateinit var playerTwo: PlayerCardView
@@ -55,10 +49,20 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     private lateinit var displayQuestionTextView: TextView
     private lateinit var blinker: ImageView
 
+    private lateinit var listener: OnFragmentInteractionListener
+    private lateinit var gameManager: GameManager
     private lateinit var viewModel: MainViewModel
 
     private lateinit var countDownTimer: CountDownTimer
     private lateinit var nbaPlayers: List<NBAPlayer>
+
+    private val set1 by lazy { Animations.getCardFlipAnimation(playerOne, requireActivity().window.decorView.bottom) }
+    private val set2 by lazy { Animations.getCardFlipAnimation(playerTwo, requireActivity().window.decorView.bottom) }
+    private val fadeIn1 by lazy { Animations.getFadeIn(playerOne) }
+    private val fadeIn2 by lazy { Animations.getFadeIn(playerTwo) }
+    private val fadeOut1 by lazy { Animations.getFadeOut(playerOne) }
+    private val fadeOut2 by lazy { Animations.getFadeOut(playerTwo) }
+    private val blinkerAnimation by lazy { Animations.getChecker(blinker) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -80,9 +84,9 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     override fun runGame() {
-        setViewsWithGameData()
-        playerOne.startAnimation(Animations.getFadeIn(playerOne))
-        playerTwo.startAnimation(Animations.getFadeIn(playerTwo))
+        setViewsWithGameData(gameManager.getRoundData())
+        playerOne.startAnimation(fadeIn1)
+        playerTwo.startAnimation(fadeIn2)
         setPlayer1CardViewOnClick()
         setPlayer2CardViewOnClick()
     }
@@ -109,7 +113,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             override fun onTick(millisUntilFinished: Long) {
                 countDownView.text = (millisUntilFinished / 1000).toString()
             }
-
             @RequiresApi(Build.VERSION_CODES.N)
             override fun onFinish() {
                 playerOne.clearAnimation();
@@ -126,16 +129,10 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         viewModel = ViewModelProvider(requireActivity(), viewModelProviderFactory).get(MainViewModel::class.java)
     }
 
-    private fun setViewsWithGameData() {
-        val data = gameManager.getRoundData()
+    private fun setViewsWithGameData(data: GameRoundData) {
         val p1 = data.getPlayer1()
         val p2 = data.getPlayer2()
-
-//autosize does not work for custom fonts
-
-//        playerOne.playerNameTextView.textSize = TextSize(p1.firstName).size
-//        playerTwo.playerNameTextView.textSize = TextSize(p2.firstName).size
-
+        //autosize does not work for custom fonts
         playerOne.playerNameLength = p1.firstName.length
         playerTwo.playerNameLength = p2.firstName.length
 
@@ -163,6 +160,11 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         }
     }
 
+    private fun setAlpha(f: Float) {
+        playerOne.playerImage.alpha = f
+        playerTwo.playerImage.alpha = f
+    }
+
     private fun setPlayerImage(player: NBAPlayer, number: Int) {
         lateinit var v: PlayerCardView
         when (number) {
@@ -180,10 +182,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun flipViews() {
-        val pBottom = requireActivity().window.decorView.bottom
-        val set1 = Animations.getCardFlipAnimation(playerOne, pBottom)
-        val set2 = Animations.getCardFlipAnimation(playerTwo, pBottom)
-
         set1.start()
         set1.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
@@ -195,18 +193,14 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             @RequiresApi(Build.VERSION_CODES.N)
             override fun onAnimationEnd(animation: Animator?) {
                 toggleStatView(true)
-                playerOne.playerImage.alpha = .4f
-                playerTwo.playerImage.alpha = .4f
-
+                setAlpha(.4f)
                 if (this@GameFragment.isVisible) {
                     Handler().postDelayed({
-                        playerOne.startAnimation(Animations.getFadeOut(playerOne));
-                        playerTwo.startAnimation(Animations.getFadeOut(playerTwo));
+                        playerOne.startAnimation(fadeOut1);
+                        playerTwo.startAnimation(fadeOut2);
                     }, 900)
-
                     Handler().postDelayed({
-                        playerOne.playerImage.alpha = 1f
-                        playerTwo.playerImage.alpha = 1f
+                        setAlpha(1f)
                         gameManager.finishRound()
                     }, 1200)
                 }
