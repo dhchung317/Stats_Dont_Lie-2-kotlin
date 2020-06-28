@@ -262,8 +262,10 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     private fun playCheckerAnimation(check: Boolean) {
         if (check) {
+            correct.bringToFront()
             correct.startAnimation(cAnimation)
         } else {
+            incorrect.bringToFront()
             incorrect.startAnimation(iAnimation)
         }
     }
