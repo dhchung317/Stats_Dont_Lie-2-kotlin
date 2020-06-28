@@ -11,11 +11,11 @@ import com.hyunki.statsdontlie2.R
 
 class PlayerCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : CardView(context, attrs) {
 
-    private val playerCardView: CardView
-    private val playerImage: ImageView
-    private val playerNameTextView: TextView
-    private val playerStatTextView: TextView
-    private val attributes: TypedArray
+    val playerCardView: CardView
+    val playerImage: ImageView
+    val playerNameTextView: TextView
+    val playerStatTextView: TextView
+    val attributes: TypedArray
 
     init {
         inflate(context, R.layout.card_view_player, this)
@@ -38,20 +38,20 @@ class PlayerCardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     }
 
-    fun setImageView(bitmap: Bitmap) {
-        playerImage.setImageBitmap(bitmap)
-    }
-
-    fun getImageView(): ImageView {
-        return playerImage
-    }
-
-    fun getNameView(): TextView {
-        return playerNameTextView
-    }
-
-    fun getStatView(): TextView {
-        return playerStatTextView
-    }
+//    fun setImageView(bitmap: Bitmap) {
+//        playerImage.setImageBitmap(bitmap)
+//    }
+//
+//    fun getImageView(): ImageView {
+//        return playerImage
+//    }
+//
+//    fun getNameView(): TextView {
+//        return playerNameTextView
+//    }
+//
+//    fun getStatView(): TextView {
+//        return playerStatTextView
+//    }
 
 }

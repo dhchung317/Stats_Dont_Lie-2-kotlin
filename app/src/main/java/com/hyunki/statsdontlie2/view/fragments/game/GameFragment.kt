@@ -25,8 +25,7 @@ import com.hyunki.statsdontlie2.view.MainViewModel
 import com.hyunki.statsdontlie2.view.fragments.game.controller.GameCommandsListener
 import com.hyunki.statsdontlie2.view.fragments.game.customviews.PlayerCardView
 import com.hyunki.statsdontlie2.view.fragments.game.delegates.TextSize
-import com.hyunki.statsdontlie2.view.fragments.game.delegates.TextSizeDelegate
-import com.hyunki.statsdontlie2.view.fragments.game.delegates.autoTextSize
+
 import com.hyunki.statsdontlie2.view.viewbinding.viewBinding
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
@@ -145,11 +144,11 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
 //autosize does not work for custom fonts
 
-        playerOne.getNameView().textSize = TextSize(p1.firstName).size
-        playerTwo.getNameView().textSize = TextSize(p2.firstName).size
+        playerOne.playerNameTextView.textSize = TextSize(p1.firstName).size
+        playerTwo.playerNameTextView.textSize = TextSize(p2.firstName).size
 
-        playerOne.getNameView().text = data.getPlayer1().firstName
-        playerTwo.getNameView().text = data.getPlayer2().firstName
+        playerOne.playerNameTextView.text = data.getPlayer1().firstName
+        playerTwo.playerNameTextView.text = data.getPlayer2().firstName
 
         setPlayerImage(p1, 1)
         setPlayerImage(p2, 2)
@@ -157,19 +156,19 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         displayQuestionTextView.text = gameManager.getRoundData().question.question
 
         toggleStatView(false)
-        playerOne.getStatView().setTextColor(resources.getColor(R.color.colorBlack))
-        playerTwo.getStatView().setTextColor(resources.getColor(R.color.colorBlack))
-        playerOne.getStatView().text = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer1Stat())
-        playerTwo.getStatView().text = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer2Stat())
+        playerOne.playerStatTextView.setTextColor(resources.getColor(R.color.colorBlack))
+        playerTwo.playerStatTextView.setTextColor(resources.getColor(R.color.colorBlack))
+        playerOne.playerStatTextView.text = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer1Stat())
+        playerTwo.playerStatTextView.text = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer2Stat())
     }
 
     private fun toggleStatView(showStat: Boolean) {
         if (showStat) {
-            playerOne.getStatView().visibility = View.VISIBLE
-            playerTwo.getStatView().visibility = View.VISIBLE
+            playerOne.playerStatTextView.visibility = View.VISIBLE
+            playerTwo.playerStatTextView.visibility = View.VISIBLE
         } else {
-            playerOne.getStatView().visibility = View.INVISIBLE
-            playerTwo.getStatView().visibility = View.INVISIBLE
+            playerOne.playerStatTextView.visibility = View.INVISIBLE
+            playerTwo.playerStatTextView.visibility = View.INVISIBLE
         }
     }
 
@@ -181,11 +180,11 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         }
         val bitmap = viewModel.getImageFromDatabase(player.playerID.toInt())
         if (bitmap != null) {
-            v.setImageView(bitmap)
+            v.playerImage.setImageBitmap(bitmap)
         } else {
             Picasso.get()
                     .load(PlayerUtil.getPlayerPhotoUrl(player.firstName, player.lastName))
-                    .into(v.getImageView())
+                    .into(v.playerImage)
         }
     }
 
@@ -205,8 +204,8 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             @RequiresApi(Build.VERSION_CODES.N)
             override fun onAnimationEnd(animation: Animator?) {
                 toggleStatView(true)
-                playerOne.getImageView().alpha = .4f
-                playerTwo.getImageView().alpha = .4f
+                playerOne.playerImage.alpha = .4f
+                playerTwo.playerImage.alpha = .4f
 
                 if (this@GameFragment.isVisible) {
                     Handler().postDelayed({
@@ -215,8 +214,8 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
                     }, 900)
 
                     Handler().postDelayed({
-                        playerOne.getImageView().alpha = 1f
-                        playerTwo.getImageView().alpha = 1f
+                        playerOne.playerImage.alpha = 1f
+                        playerTwo.playerImage.alpha = 1f
                         gameManager.finishRound()
                     }, 1200)
                 }
@@ -231,7 +230,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             val check = gameManager.getRoundData().getPlayer1() == gameManager.getRoundData().getAnswer()
             roundResults(check)
             playCheckerAnimation(check)
-            animateStatView(check, playerOne.getStatView())
+            animateStatView(check, playerOne.playerStatTextView)
             flipViews()
         }
     }
@@ -243,7 +242,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             val check = gameManager.getRoundData().getPlayer2() == gameManager.getRoundData().getAnswer()
             roundResults(check)
             playCheckerAnimation(check)
-            animateStatView(check, playerTwo.getStatView())
+            animateStatView(check, playerTwo.playerStatTextView)
             flipViews()
         }
     }
@@ -270,10 +269,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     private fun roundResults(isRightPlayer: Boolean) {
         gameManager.checkAnswer(isRightPlayer)
-    }
-
-    private fun isNameLengthTooLong(name: String): Boolean {
-        return name.length > 8
     }
 
     companion object {
