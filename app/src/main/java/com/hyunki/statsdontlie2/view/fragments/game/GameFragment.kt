@@ -43,14 +43,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     private val binding by viewBinding(FragmentGameBinding::bind)
 
-    private val cAnimation by lazy {
-        Animations.getChecker(correct)
-    }
-
-    private val iAnimation by lazy {
-        Animations.getChecker(incorrect)
-    }
-
     private lateinit var listener: OnFragmentInteractionListener
 
     private lateinit var gameManager: GameManager
@@ -61,8 +53,8 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     private lateinit var countDownView: TextView
     private lateinit var displayQuestionTextView: TextView
 
-    private lateinit var correct: ImageView
-    private lateinit var incorrect: ImageView
+    private lateinit var blinker: ImageView
+    private val blinkerAnimation by lazy { Animations.getChecker(blinker) }
 
     private lateinit var viewModel: MainViewModel
 
@@ -110,8 +102,8 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         playerTwo = binding.playerTwo
         displayQuestionTextView = binding.questionDisplayTextView
         countDownView = binding.countDownTimer
-        incorrect = binding.wrong
-        correct = binding.right
+        blinker = binding.blinker
+
     }
 
     private fun setCountDownTimer() {
@@ -124,8 +116,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             override fun onFinish() {
                 playerOne.clearAnimation();
                 playerTwo.clearAnimation();
-                incorrect.clearAnimation();
-                correct.clearAnimation();
+                blinker.clearAnimation();
                 listener.displayResultFragment()
                 gameManager.setResults()
             }
@@ -258,13 +249,12 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun playCheckerAnimation(check: Boolean) {
-        if (check) {
-            correct.bringToFront()
-            correct.startAnimation(cAnimation)
-        } else {
-            incorrect.bringToFront()
-            incorrect.startAnimation(iAnimation)
+        when (check){
+            true -> blinker.setImageResource(R.drawable.correct)
+            else -> blinker.setImageResource(R.drawable.incorrect)
         }
+        blinker.bringToFront()
+        blinker.startAnimation(blinkerAnimation)
     }
 
     private fun roundResults(isRightPlayer: Boolean) {
