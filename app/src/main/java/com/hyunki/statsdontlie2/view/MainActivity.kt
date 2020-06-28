@@ -48,11 +48,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
 
         val networkSharedPreference = getPreferences(Context.MODE_PRIVATE).getBoolean(getString(R.string.saved_network_call_preference_key),false)
 
-//        if(!networkSharedPreference){
+        if(!networkSharedPreference){
             initViewModel()
-//        } else {
-//            displayMenuFragment()
-//        }
+        } else {
+            displayMenuFragment()
+        }
     }
 
     @SuppressLint("CheckResult")

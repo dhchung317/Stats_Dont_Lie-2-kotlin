@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="GameFragmentView">
-
+    <declare-styleable name="PlayerCardView">
+        <attr name="image" format="reference" />
+        <attr name="nameText" format="string" />
+        <attr name="statText" format="string" />
+        <attr name="playerBackground" format="color" />
     </declare-styleable>
 </resources>
