@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     lateinit var resultFragment: ResultFragment
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
-
     private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: MainViewModel
 
@@ -43,11 +42,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         progressBar = binding.progressBar
-        viewModel = ViewModelProvider(this,providerFactory).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this, providerFactory).get(MainViewModel::class.java)
 
-        val networkSharedPreference = getPreferences(Context.MODE_PRIVATE).getBoolean(getString(R.string.saved_network_call_preference_key),false)
+        val networkSharedPreference = getPreferences(Context.MODE_PRIVATE).getBoolean(getString(R.string.saved_network_call_preference_key), false)
 
-        if(!networkSharedPreference){
+        if (!networkSharedPreference) {
             initViewModel()
         } else {
             displayMenuFragment()
@@ -114,9 +113,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         }
     }
 
-    private fun addSharedPreferenceForNetworkCall(){
+    private fun addSharedPreferenceForNetworkCall() {
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
+        with(sharedPref.edit()) {
             putBoolean(getString(R.string.saved_network_call_preference_key), true)
             commit()
         }

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hyunki.statsdontlie2.Animations
@@ -24,7 +25,6 @@ import com.hyunki.statsdontlie2.utils.PlayerUtil
 import com.hyunki.statsdontlie2.view.MainViewModel
 import com.hyunki.statsdontlie2.view.fragments.game.controller.GameCommandsListener
 import com.hyunki.statsdontlie2.view.fragments.game.customviews.PlayerCardView
-import com.hyunki.statsdontlie2.view.fragments.game.delegates.TextSize
 
 import com.hyunki.statsdontlie2.view.viewbinding.viewBinding
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
@@ -47,14 +47,13 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     private lateinit var gameManager: GameManager
 
+    private val blinkerAnimation by lazy { Animations.getChecker(blinker) }
+
     private lateinit var playerOne: PlayerCardView
     private lateinit var playerTwo: PlayerCardView
-
     private lateinit var countDownView: TextView
     private lateinit var displayQuestionTextView: TextView
-
     private lateinit var blinker: ImageView
-    private val blinkerAnimation by lazy { Animations.getChecker(blinker) }
 
     private lateinit var viewModel: MainViewModel
 
@@ -103,7 +102,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         displayQuestionTextView = binding.questionDisplayTextView
         countDownView = binding.countDownTimer
         blinker = binding.blinker
-
     }
 
     private fun setCountDownTimer() {
@@ -135,31 +133,33 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
 //autosize does not work for custom fonts
 
-        playerOne.playerNameTextView.textSize = TextSize(p1.firstName).size
-        playerTwo.playerNameTextView.textSize = TextSize(p2.firstName).size
+//        playerOne.playerNameTextView.textSize = TextSize(p1.firstName).size
+//        playerTwo.playerNameTextView.textSize = TextSize(p2.firstName).size
 
-        playerOne.playerNameTextView.text = data.getPlayer1().firstName
-        playerTwo.playerNameTextView.text = data.getPlayer2().firstName
+        playerOne.playerNameLength = p1.firstName.length
+        playerTwo.playerNameLength = p2.firstName.length
+
+        playerOne.playerName = data.getPlayer1().firstName
+        playerTwo.playerName = data.getPlayer2().firstName
 
         setPlayerImage(p1, 1)
         setPlayerImage(p2, 2)
 
-        displayQuestionTextView.text = gameManager.getRoundData().question.question
+        displayQuestionTextView.text = gameManager.getRoundData().question.qString
 
         toggleStatView(false)
-        playerOne.playerStatTextView.setTextColor(resources.getColor(R.color.colorBlack))
-        playerTwo.playerStatTextView.setTextColor(resources.getColor(R.color.colorBlack))
-        playerOne.playerStatTextView.text = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer1Stat())
-        playerTwo.playerStatTextView.text = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer2Stat())
+
+        playerOne.playerStat = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer1Stat())
+        playerTwo.playerStat = DecimalFormat("#.#").format(gameManager.getRoundData().getPlayer2Stat())
     }
 
     private fun toggleStatView(showStat: Boolean) {
         if (showStat) {
-            playerOne.playerStatTextView.visibility = View.VISIBLE
-            playerTwo.playerStatTextView.visibility = View.VISIBLE
+            playerOne.playerStatVisibility = true
+            playerTwo.playerStatVisibility = true
         } else {
-            playerOne.playerStatTextView.visibility = View.INVISIBLE
-            playerTwo.playerStatTextView.visibility = View.INVISIBLE
+            playerOne.playerStatVisibility = false
+            playerTwo.playerStatVisibility = false
         }
     }
 
@@ -216,40 +216,42 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
 
     private fun setPlayer1CardViewOnClick() {
         playerOne.setOnClickListener { v: View? ->
-            playerOne.isClickable = false
-            playerTwo.isClickable = false
+            toggleCardClickable(false)
             val check = gameManager.getRoundData().getPlayer1() == gameManager.getRoundData().getAnswer()
             roundResults(check)
-            playCheckerAnimation(check)
-            animateStatView(check, playerOne.playerStatTextView)
+            playBlinkerAnimation(check)
+            colorizeStatView(check, playerOne.playerStatTextView, playerTwo.playerStatTextView)
             flipViews()
         }
     }
 
     private fun setPlayer2CardViewOnClick() {
         playerTwo.setOnClickListener { v: View? ->
-            playerOne.isClickable = false
-            playerTwo.isClickable = false
+            toggleCardClickable(false)
             val check = gameManager.getRoundData().getPlayer2() == gameManager.getRoundData().getAnswer()
             roundResults(check)
-            playCheckerAnimation(check)
-            animateStatView(check, playerTwo.playerStatTextView)
+            playBlinkerAnimation(check)
+            colorizeStatView(check, playerTwo.playerStatTextView, playerOne.playerStatTextView)
             flipViews()
         }
     }
 
-    private fun animateStatView(isCorrect: Boolean, textView: TextView) {
-        if (isCorrect) {
-            textView.setTextColor(
-                    resources.getColor(R.color.colorGreen))
-        } else {
-            textView.setTextColor(
-                    resources.getColor(R.color.colorErrorRed))
-        }
+    private fun toggleCardClickable(boolean: Boolean) {
+        playerOne.isClickable = boolean
+        playerTwo.isClickable = boolean
     }
 
-    private fun playCheckerAnimation(check: Boolean) {
-        when (check){
+    private fun colorizeStatView(isCorrect: Boolean, v: TextView, v2: TextView) {
+        if (isCorrect) {
+            v.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorGreen))
+        } else {
+            v.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorErrorRed))
+        }
+        v2.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorBlack))
+    }
+
+    private fun playBlinkerAnimation(check: Boolean) {
+        when (check) {
             true -> blinker.setImageResource(R.drawable.correct)
             else -> blinker.setImageResource(R.drawable.incorrect)
         }
