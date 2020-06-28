@@ -1,7 +1,7 @@
 package com.hyunki.statsdontlie2.di
 
 import androidx.lifecycle.ViewModel
-import com.hyunki.statsdontlie2.view.NewViewModel
+import com.hyunki.statsdontlie2.view.MainViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -10,6 +10,6 @@ import dagger.multibindings.IntoMap
 abstract class ViewModelsModule {
     @Binds
     @IntoMap
-    @ViewModelKey(NewViewModel::class)
-    abstract fun bindNewViewModel(viewModel: NewViewModel): ViewModel
+    @ViewModelKey(MainViewModel::class)
+    abstract fun bindNewViewModel(viewModel: MainViewModel): ViewModel
 }

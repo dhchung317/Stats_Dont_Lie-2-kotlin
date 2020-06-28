@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
-class NewViewModel @Inject
+class MainViewModel @Inject
 constructor(private val databaseRepository: BDLDatabaseRepository, private val repository: Repository) : ViewModel() {
 
     private var incorrectGuesses: Int = 0

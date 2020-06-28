@@ -21,10 +21,13 @@ import com.hyunki.statsdontlie2.databinding.FragmentGameBinding
 import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.view.fragments.game.utils.GameManager
 import com.hyunki.statsdontlie2.utils.PlayerUtil
-import com.hyunki.statsdontlie2.view.NewViewModel
+import com.hyunki.statsdontlie2.view.MainViewModel
 import com.hyunki.statsdontlie2.view.fragments.game.controller.GameCommandsListener
 import com.hyunki.statsdontlie2.view.fragments.game.customviews.PlayerCardView
-import com.hyunki.statsdontlie2.view.fragments.viewBinding
+import com.hyunki.statsdontlie2.view.fragments.game.delegates.TextSize
+import com.hyunki.statsdontlie2.view.fragments.game.delegates.TextSizeDelegate
+import com.hyunki.statsdontlie2.view.fragments.game.delegates.autoTextSize
+import com.hyunki.statsdontlie2.view.viewbinding.viewBinding
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
@@ -54,7 +57,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     private lateinit var gameManager: GameManager
 
     private lateinit var playerOne: PlayerCardView
-
     private lateinit var playerTwo: PlayerCardView
 
     private lateinit var countDownView: TextView
@@ -63,7 +65,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     private lateinit var correct: ImageView
     private lateinit var incorrect: ImageView
 
-    private lateinit var viewModel: NewViewModel
+    private lateinit var viewModel: MainViewModel
 
     private lateinit var countDownTimer: CountDownTimer
     private lateinit var nbaPlayers: List<NBAPlayer>
@@ -133,7 +135,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun setViewModel() {
-        viewModel = ViewModelProvider(requireActivity(), viewModelProviderFactory).get(NewViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelProviderFactory).get(MainViewModel::class.java)
     }
 
     private fun setViewsWithGameData() {
@@ -142,17 +144,9 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         val p2 = data.getPlayer2()
 
 //autosize does not work for custom fonts
-        if (isNameLengthTooLong(p1.firstName)) {
-            playerOne.getNameView().textSize = 34f
-        } else {
-            playerOne.getNameView().textSize = 36f
-        }
 
-        if (isNameLengthTooLong(p2.firstName)) {
-            playerTwo.getNameView().textSize = 34f
-        } else {
-            playerTwo.getNameView().textSize = 36f
-        }
+        playerOne.getNameView().textSize = TextSize(p1.firstName).size
+        playerTwo.getNameView().textSize = TextSize(p2.firstName).size
 
         playerOne.getNameView().text = data.getPlayer1().firstName
         playerTwo.getNameView().text = data.getPlayer2().firstName
