@@ -17,4 +17,10 @@
         <item name="android:shadowRadius">4</item>
     </style>
 
+    <style name="PlayerCardView" parent="CardView">
+        <!-- Custom card items -->
+        <item name="cardElevation">@dimen/card_elevation</item>
+    </style>
+
+    <dimen name="card_elevation">0dp</dimen>
 </resources>
