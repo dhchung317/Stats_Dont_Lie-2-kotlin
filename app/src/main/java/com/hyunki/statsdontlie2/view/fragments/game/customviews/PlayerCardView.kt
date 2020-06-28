@@ -1,4 +1,4 @@
-package com.hyunki.statsdontlie2.view.fragments.game
+package com.hyunki.statsdontlie2.view.fragments.game.customviews
 
 import android.content.Context
 import android.content.res.TypedArray

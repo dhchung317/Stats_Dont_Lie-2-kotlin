@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hyunki.statsdontlie2.Animations
@@ -24,6 +23,7 @@ import com.hyunki.statsdontlie2.view.fragments.game.utils.GameManager
 import com.hyunki.statsdontlie2.utils.PlayerUtil
 import com.hyunki.statsdontlie2.view.NewViewModel
 import com.hyunki.statsdontlie2.view.fragments.game.controller.GameCommandsListener
+import com.hyunki.statsdontlie2.view.fragments.game.customviews.PlayerCardView
 import com.hyunki.statsdontlie2.view.fragments.viewBinding
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
@@ -33,6 +33,10 @@ import javax.inject.Inject
 //TODO work on animations
 //TODO work on ui : placement of name text, edge cases for long names
 //TODO refactor logic between gamemanager and fragment
+//TODO image size is too small
+//TODO results fragment remains in stack
+//TODO exit button in game
+//TODO change right/wrong blinker to one view
 class GameFragment @Inject constructor(private val viewModelProviderFactory: ViewModelProviderFactory) : Fragment(R.layout.fragment_game), GameCommandsListener {
 
     private val binding by viewBinding(FragmentGameBinding::bind)

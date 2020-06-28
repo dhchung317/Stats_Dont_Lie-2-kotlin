@@ -15,7 +15,7 @@ import com.hyunki.statsdontlie2.R
 import com.hyunki.statsdontlie2.view.NewViewModel
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import javax.inject.Inject
-
+//TODO exit button
 class ResultFragment @Inject constructor(private val viewModelProviderFactory: ViewModelProviderFactory) : Fragment() {
 
     private lateinit var viewModel: NewViewModel
