@@ -51,13 +51,13 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     private lateinit var countDownView: TextView
     private lateinit var displayQuestionTextView: TextView
 
+    private lateinit var correct: ImageView
+    private lateinit var incorrect: ImageView
+
     private lateinit var viewModel: NewViewModel
 
     private lateinit var countDownTimer: CountDownTimer
     private lateinit var nbaPlayers: List<NBAPlayer>
-
-    private lateinit var correct: ImageView
-    private lateinit var incorrect: ImageView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
