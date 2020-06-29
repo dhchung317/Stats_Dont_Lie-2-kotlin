@@ -14,7 +14,6 @@ object PlayerUtil {
                           lastName: String): String {
         return if (isValidFullName(firstName, lastName)) createPlayerPhotoUrl(firstName, lastName) else DEFAULT_PLAYER_PHOTO_URL
     }
-
     /**
      * I used a switch here in case we run into another issue in the future
      * if decide to add more players.
@@ -26,7 +25,6 @@ object PlayerUtil {
             else -> "$PLAYER_PHOTO_URL$lastName/$firstName"
         }
     }
-
     private fun isValidFullName(firstName: String,
                                 lastName: String): Boolean {
         return firstName != "" && lastName != ""

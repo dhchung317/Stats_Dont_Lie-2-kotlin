@@ -2,7 +2,6 @@ package com.hyunki.statsdontlie2.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,17 +14,17 @@ import androidx.lifecycle.ViewModelProvider
 import com.hyunki.statsdontlie2.BaseApplication
 import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
 import com.hyunki.statsdontlie2.R
-import com.hyunki.statsdontlie2.constants.GameConstants
-import com.hyunki.statsdontlie2.model.NBAPlayer
+import com.hyunki.statsdontlie2.databinding.ActivityMainBinding
 import com.hyunki.statsdontlie2.network.ResponseState
 import com.hyunki.statsdontlie2.view.fragments.game.GameFragment
-import com.hyunki.statsdontlie2.view.fragments.MenuFragment
-import com.hyunki.statsdontlie2.view.fragments.ResultFragment
+import com.hyunki.statsdontlie2.view.fragments.menu.MenuFragment
+import com.hyunki.statsdontlie2.view.fragments.result.ResultFragment
+import com.hyunki.statsdontlie2.view.viewbinding.viewBinding
 import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
-import java.lang.reflect.Field
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
+    private val binding by viewBinding(ActivityMainBinding::inflate)
     @Inject
     lateinit var menuFragment: MenuFragment
     @Inject
@@ -34,21 +33,20 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     lateinit var resultFragment: ResultFragment
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
-
     private lateinit var progressBar: ProgressBar
-    private lateinit var viewModel: NewViewModel
+    private lateinit var viewModel: MainViewModel
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as BaseApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        progressBar = findViewById(R.id.progressBar)
-        viewModel = ViewModelProvider(this,providerFactory).get(NewViewModel::class.java)
+        progressBar = binding.progressBar
+        viewModel = ViewModelProvider(this, providerFactory).get(MainViewModel::class.java)
 
-        val networkSharedPreference = getPreferences(Context.MODE_PRIVATE).getBoolean(getString(R.string.saved_network_call_preference_key),false)
+        val networkSharedPreference = getPreferences(Context.MODE_PRIVATE).getBoolean(getString(R.string.saved_network_call_preference_key), false)
 
-        if(!networkSharedPreference){
+        if (!networkSharedPreference) {
             initViewModel()
         } else {
             displayMenuFragment()
@@ -115,9 +113,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         }
     }
 
-    private fun addSharedPreferenceForNetworkCall(){
+    private fun addSharedPreferenceForNetworkCall() {
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
+        with(sharedPref.edit()) {
             putBoolean(getString(R.string.saved_network_call_preference_key), true)
             commit()
         }

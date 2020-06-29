@@ -21,11 +21,9 @@ object Animations {
             override fun onAnimationStart(animation: Animation) {
                 v.visibility = View.VISIBLE
             }
-
             override fun onAnimationEnd(animation: Animation) {
                 v.visibility = View.INVISIBLE
             }
-
             override fun onAnimationRepeat(animation: Animation) {}
         })
         return checker
@@ -36,8 +34,7 @@ object Animations {
         fadeIn.setAnimationListener(object : AnimationListener {
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationEnd(animation: Animation) {
-                v.isClickable = true
-                v.isEnabled = true
+                toggleView(v, true)
             }
             override fun onAnimationRepeat(animation: Animation) {}
         })
@@ -48,8 +45,7 @@ object Animations {
         fadeOut = AnimationUtils.loadAnimation(v.context, R.anim.fade_out)
         fadeOut.setAnimationListener(object : AnimationListener {
             override fun onAnimationStart(animation: Animation) {
-                v.isClickable = false
-                v.isEnabled = false
+                toggleView(v,false)
             }
             override fun onAnimationEnd(animation: Animation) {}
             override fun onAnimationRepeat(animation: Animation) {}
@@ -77,5 +73,10 @@ object Animations {
         val set = AnimatorSet()
         set.playTogether(translate,alpha,rotate)
         return set
+    }
+
+    private fun toggleView(v: View, boolean: Boolean){
+        v.isClickable = boolean
+        v.isEnabled = boolean
     }
 }
