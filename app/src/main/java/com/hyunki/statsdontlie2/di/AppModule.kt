@@ -1,9 +1,9 @@
 package com.hyunki.statsdontlie2.di
 
 import com.hyunki.statsdontlie2.constants.NetworkConstants
-import com.hyunki.statsdontlie2.localdb.BDLDatabase
-import com.hyunki.statsdontlie2.localdb.BDLDatabaseRepository
-import com.hyunki.statsdontlie2.localdb.BDLDatabaseRepositoryImpl
+import com.hyunki.statsdontlie2.localdb.Database
+import com.hyunki.statsdontlie2.localdb.DatabaseRepository
+import com.hyunki.statsdontlie2.localdb.DatabaseRepositoryImpl
 import com.hyunki.statsdontlie2.network.BDLService
 import com.hyunki.statsdontlie2.repository.Repository
 import com.hyunki.statsdontlie2.repository.RepositoryImpl
@@ -42,8 +42,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideBDLDatabaseRepository(database: BDLDatabase): BDLDatabaseRepository {
-        return BDLDatabaseRepositoryImpl(database)
+    fun provideBDLDatabaseRepository(database: Database): DatabaseRepository {
+        return DatabaseRepositoryImpl(database)
     }
 
     @Provides

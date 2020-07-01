@@ -6,29 +6,29 @@ import android.graphics.BitmapFactory
 import com.hyunki.statsdontlie2.model.NBAPlayer
 import javax.inject.Inject
 
-class BDLDatabaseRepositoryImpl @Inject constructor(private val bdlDatabase: BDLDatabase) : BDLDatabaseRepository {
+class DatabaseRepositoryImpl @Inject constructor(private val database: Database) : DatabaseRepository {
 
     override fun addAllPlayerData(NBAPlayers: List<NBAPlayer>) {
-        bdlDatabase.addAllPlayerData(NBAPlayers)
+        database.addAllPlayerData(NBAPlayers)
     }
 
     override fun getAllPlayerData(): List<NBAPlayer> {
-        return bdlDatabase.getAllPlayerData()
+        return database.getAllPlayerData()
     }
 
     override fun getPlayerAverageModelById(playerID: Int): NBAPlayer {
-        return bdlDatabase.getPlayerById(playerID)
+        return database.getPlayerById(playerID)
     }
 
     override fun addPlayerImage(playerID: Int, image: ByteArray) {
-        bdlDatabase.addPlayerImage(playerID, image)
+        database.addPlayerImage(playerID, image)
     }
 
     override fun getPlayerImage(playerID: Int): Bitmap? {
         return BitmapFactory.decodeByteArray(
-                bdlDatabase.getPlayerImage(playerID),
+                database.getPlayerImage(playerID),
                 0,
-                bdlDatabase.getPlayerImage(playerID)!!.size
+                database.getPlayerImage(playerID)!!.size
         )
     }
 }

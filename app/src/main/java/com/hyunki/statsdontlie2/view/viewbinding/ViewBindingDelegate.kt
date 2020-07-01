@@ -13,7 +13,8 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 //parameterized class which is a delegate wrapped around a viewbinding that is of the in type
-//the constructor takes a fragment and a View, which will return a viewbinding from the view.
+//the constructor takes a fragment and a View, which will return a viewbinding from the view, while
+//observing the fragments lifecycle inorder to null out the binding on its destroy
 class FragmentViewBindingDelegate<T : ViewBinding>(
         val fragment: Fragment,
         val viewBindingFactory: (View) -> T

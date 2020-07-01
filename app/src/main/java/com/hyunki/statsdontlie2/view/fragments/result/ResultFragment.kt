@@ -19,20 +19,16 @@ import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import javax.inject.Inject
 //TODO exit button
 class ResultFragment @Inject constructor(private val viewModelProviderFactory: ViewModelProviderFactory) : Fragment(R.layout.fragment_result) {
-    val binding by viewBinding(FragmentResultBinding::bind)
+    private val binding by viewBinding(FragmentResultBinding::bind)
 
-    private lateinit var viewModel: MainViewModel
     private lateinit var result: TextView
     private lateinit var menu: Button
     private lateinit var restart: Button
-    private lateinit var mp: MediaPlayer
-    private lateinit var listener: OnFragmentInteractionListener
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mp = MediaPlayer.create(context, R.raw.balldontlie)
-        mp.start()
-    }
+    private lateinit var listener: OnFragmentInteractionListener
+    private lateinit var viewModel: MainViewModel
+
+    private lateinit var mp: MediaPlayer
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -53,6 +49,8 @@ class ResultFragment @Inject constructor(private val viewModelProviderFactory: V
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mp = MediaPlayer.create(context, R.raw.balldontlie)
+        mp.start()
         initializeViews(view)
         viewModel = ViewModelProvider(requireActivity(), viewModelProviderFactory).get(MainViewModel::class.java)
         val concatResults

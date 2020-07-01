@@ -1,6 +1,7 @@
 package com.hyunki.statsdontlie2.view.fragments.game.utils
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.hyunki.statsdontlie2.constants.GameConstants
 import com.hyunki.statsdontlie2.controller.OnFragmentInteractionListener
@@ -10,12 +11,13 @@ import com.hyunki.statsdontlie2.model.NBAPlayer
 class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener: GameCommandsListener, private val listener: OnFragmentInteractionListener) {
     private val playersList = gameRoster.toMutableList()
 
-    private val gameBundle = GameRoundBundle()
+    private val gameBundle:GameRoundBundle
     private lateinit var gameData: GameRoundData
 
     init {
         runClock()
         setUpGameManager()
+        gameBundle = GameRoundBundle()
     }
 
     private fun shuffleList() {
@@ -38,7 +40,7 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun finishRound() {
-        gameBundle.addGameData(gameData)
+
         setUpGameManager()
         runGame()
     }
@@ -53,6 +55,10 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
 
     fun getRoundData(): GameRoundData {
         return gameData
+    }
+
+    fun addRoundData() {
+        gameBundle.addGameData(gameData)
     }
 
     fun checkAnswer(isRightPlayer: Boolean) {
@@ -74,9 +80,11 @@ class GameManager(gameRoster: List<NBAPlayer>, private val gameCommandsListener:
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun setResults() {
+
         val results = calculateResultsFromGameBundle(gameBundle)
         listener.setResultsDataFromGameManager(
                 playerCorrectGuesses = results.correct, playerIncorrectGuesses = results.incorrect)
+        gameBundle.clearRounds()
     }
 
     data class Result(val incorrect: Int, val correct: Int)

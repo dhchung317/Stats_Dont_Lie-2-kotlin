@@ -3,6 +3,7 @@ package com.hyunki.statsdontlie2
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
@@ -32,9 +33,11 @@ object Animations {
     fun getFadeIn(v: View): Animation? {
         fadeIn = AnimationUtils.loadAnimation(v.context, R.anim.fade_in)
         fadeIn.setAnimationListener(object : AnimationListener {
-            override fun onAnimationStart(animation: Animation) {}
+            override fun onAnimationStart(animation: Animation) {
+                toggleView(v,false)
+            }
             override fun onAnimationEnd(animation: Animation) {
-                toggleView(v, true)
+                toggleView(v,true)
             }
             override fun onAnimationRepeat(animation: Animation) {}
         })
@@ -53,7 +56,8 @@ object Animations {
         return fadeOut
     }
 
-    fun getCardFlipAnimation(v: View, parentTop: Int): AnimatorSet {
+    fun getCardFlipAnimation(v: View, parentTop: Int): AnimatorSet? {
+        Log.d("animations", "getCardFlipAnimation: called")
         val y = v.y
         val top = parentTop.toFloat()
         val setDuration = 250L
