@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import com.hyunki.statsdontlie2.model.NBAPlayer
 
 
-interface BDLDatabaseRepository {
+interface DatabaseRepository {
     fun addAllPlayerData(NBAPlayers: List<NBAPlayer>)
     fun getPlayerAverageModelById(playerID: Int): NBAPlayer
     fun getAllPlayerData():List<NBAPlayer>

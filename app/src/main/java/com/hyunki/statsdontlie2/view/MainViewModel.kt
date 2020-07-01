@@ -1,11 +1,10 @@
 package com.hyunki.statsdontlie2.view
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.hyunki.statsdontlie2.constants.GameConstants
-import com.hyunki.statsdontlie2.localdb.BDLDatabaseRepository
+import com.hyunki.statsdontlie2.localdb.DatabaseRepository
 import com.hyunki.statsdontlie2.model.NBAPlayer
 import com.hyunki.statsdontlie2.network.ResponseState
 import com.hyunki.statsdontlie2.repository.Repository
@@ -23,7 +22,7 @@ import java.util.*
 import javax.inject.Inject
 
 class MainViewModel @Inject
-constructor(private val databaseRepository: BDLDatabaseRepository, private val repository: Repository) : ViewModel() {
+constructor(private val databaseRepository: DatabaseRepository, private val repository: Repository) : ViewModel() {
 
     private var incorrectGuesses: Int = 0
     private var correctGuesses: Int = 0
@@ -39,6 +38,7 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
 
         try {
             withContext(Dispatchers.Default) {
+
                 val res = async {
                     playerIdLists.asFlow().map { id ->
                         repository.callBDLResponseClient(id)
@@ -48,16 +48,12 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
                 val playerAverageModels = async {
                     res.await().asFlow().map { res ->
                         val gameStatUtil = GameStatUtil(res.data)
-
                         val currentPlayer = res.data[0].player
-                        Log.d(TAG, "callBDLResponseClient: " + res.data.get(0).pts)
                         val imgUrl = PlayerUtil.getPlayerPhotoUrl(currentPlayer.first_name, currentPlayer.last_name)
 
-                        withContext(Dispatchers.Default) {
-                            saveImageToDatabase(
-                                    currentPlayer.id,
-                                    ImageUtil.getBitmapAsByteArray(ImageUtil.getBitmapFromURL(imgUrl)))
-                        }
+                        saveImageToDatabase(
+                                currentPlayer.id,
+                                ImageUtil.getBitmapAsByteArray(ImageUtil.getBitmapFromURL(imgUrl)))
 
                         return@map PlayerModelCreator.createPlayerModel(
                                 currentPlayer.id.toLong(),
@@ -99,7 +95,7 @@ constructor(private val databaseRepository: BDLDatabaseRepository, private val r
         incorrectGuesses = incorrect
     }
 
-    fun getCorrectGuesses(): Int{
+    fun getCorrectGuesses(): Int {
         return correctGuesses
     }
 

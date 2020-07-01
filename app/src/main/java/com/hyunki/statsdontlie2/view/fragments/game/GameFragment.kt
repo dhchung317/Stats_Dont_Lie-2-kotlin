@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import com.hyunki.statsdontlie2.viewmodel.ViewModelProviderFactory
 import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
 import javax.inject.Inject
+import kotlin.reflect.KProperty
 
 //TODO work on animations
 //TODO refactor logic between gamemanager and fragment
@@ -53,14 +55,6 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     private lateinit var countDownTimer: CountDownTimer
     private lateinit var nbaPlayers: List<NBAPlayer>
 
-    private val set1 by lazy { Animations.getCardFlipAnimation(playerOne, requireActivity().window.decorView.bottom) }
-    private val set2 by lazy { Animations.getCardFlipAnimation(playerTwo, requireActivity().window.decorView.bottom) }
-    private val fadeIn1 by lazy { Animations.getFadeIn(playerOne) }
-    private val fadeIn2 by lazy { Animations.getFadeIn(playerTwo) }
-    private val fadeOut1 by lazy { Animations.getFadeOut(playerOne) }
-    private val fadeOut2 by lazy { Animations.getFadeOut(playerTwo) }
-    private val blinkerAnimation by lazy { Animations.getChecker(blinker) }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
@@ -73,6 +67,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "onViewCreated: called")
         findViews()
         setViewModel()
         nbaPlayers = viewModel.getPlayerAverageModels()
@@ -81,15 +76,16 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     override fun runGame() {
+        toggleCardClickable(true)
         setViewsWithGameData(gameManager.getRoundData())
-        playerOne.startAnimation(fadeIn1)
-        playerTwo.startAnimation(fadeIn2)
+        playerOne.startAnimation(Animations.getFadeIn(playerOne))
+        playerTwo.startAnimation(Animations.getFadeIn(playerTwo))
         setPlayer1CardViewOnClick()
         setPlayer2CardViewOnClick()
     }
 
     override fun runClock() {
-        setCountDownTimer()
+        setCountDownTimer(5000)
     }
 
     override fun onDestroyView() {
@@ -105,16 +101,17 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
         blinker = binding.blinker
     }
 
-    private fun setCountDownTimer() {
-        countDownTimer = object : CountDownTimer(30000, 1000) {
+    private fun setCountDownTimer(long: Long) {
+        countDownTimer = object : CountDownTimer(long, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 countDownView.text = (millisUntilFinished / 1000).toString()
             }
+
             @RequiresApi(Build.VERSION_CODES.N)
             override fun onFinish() {
-                playerOne.clearAnimation();
-                playerTwo.clearAnimation();
-                blinker.clearAnimation();
+//                playerOne.clearAnimation();
+//                playerTwo.clearAnimation();
+//                blinker.clearAnimation();
                 listener.displayResultFragment()
                 gameManager.setResults()
             }
@@ -179,27 +176,35 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun flipViews() {
-        set1.start()
-        set1.addListener(object : AnimatorListenerAdapter() {
+
+        val set1 = Animations.getCardFlipAnimation(playerOne, requireActivity().window.decorView.bottom)
+        val set2 = Animations.getCardFlipAnimation(playerTwo, requireActivity().window.decorView.bottom)
+
+
+        Log.d(TAG, "flipViews: " + set1?.childAnimations.toString())
+        set1?.start()
+        Log.d("animations", "flipViews: called")
+        set1?.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                set2.start()
+                set2?.start()
             }
         })
 
-        set2.addListener(object : AnimatorListenerAdapter() {
+        set2?.addListener(object : AnimatorListenerAdapter() {
             @RequiresApi(Build.VERSION_CODES.N)
             override fun onAnimationEnd(animation: Animator?) {
                 toggleStatView(true)
                 setAlpha(.4f)
                 if (this@GameFragment.isVisible) {
                     Handler().postDelayed({
-                        playerOne.startAnimation(fadeOut1);
-                        playerTwo.startAnimation(fadeOut2);
+                        playerOne.startAnimation(Animations.getFadeOut(playerOne));
+                        playerTwo.startAnimation(Animations.getFadeOut(playerTwo));
                     }, 900)
                     Handler().postDelayed({
                         setAlpha(1f)
                         gameManager.finishRound()
                     }, 1200)
+                    gameManager.addRoundData()
                 }
             }
         })
@@ -228,8 +233,11 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
     }
 
     private fun toggleCardClickable(boolean: Boolean) {
+        Log.d("animations", "toggleCardClickable: $boolean")
         playerOne.isClickable = boolean
         playerTwo.isClickable = boolean
+        playerOne.isEnabled = boolean
+        playerTwo.isEnabled = boolean
     }
 
     private fun colorizeStatView(isCorrect: Boolean, v: TextView, v2: TextView) {
@@ -247,7 +255,7 @@ class GameFragment @Inject constructor(private val viewModelProviderFactory: Vie
             else -> blinker.setImageResource(R.drawable.incorrect)
         }
         blinker.bringToFront()
-        blinker.startAnimation(blinkerAnimation)
+        blinker.startAnimation(Animations.getChecker(blinker))
     }
 
     private fun roundResults(isRightPlayer: Boolean) {

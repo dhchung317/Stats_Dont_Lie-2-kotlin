@@ -4,7 +4,7 @@ import com.hyunki.statsdontlie2.Database
 import com.hyunki.statsdontlie2.model.NBAPlayer
 import javax.inject.Inject
 
-class BDLDatabase @Inject constructor(private val database: Database) {
+class Database @Inject constructor(private val database: Database) {
 
     fun addAllPlayerData(NBAPlayers: List<NBAPlayer>) {
         database.savedNBAPlayerQueries.transaction {

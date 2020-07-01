@@ -2,7 +2,7 @@ package com.hyunki.statsdontlie2.di
 
 import android.app.Application
 import com.hyunki.statsdontlie2.BaseApplication
-import com.hyunki.statsdontlie2.localdb.di.BDLDatabaseModule
+import com.hyunki.statsdontlie2.localdb.di.DatabaseModule
 import com.hyunki.statsdontlie2.view.MainActivity
 import com.hyunki.statsdontlie2.view.fragments.game.GameFragment
 import com.hyunki.statsdontlie2.view.fragments.menu.MenuFragment
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Component(
         modules = [
         AppModule::class,
-        BDLDatabaseModule::class,
+        DatabaseModule::class,
         ViewModelFactoryModule::class,
         ViewModelsModule::class
         ]

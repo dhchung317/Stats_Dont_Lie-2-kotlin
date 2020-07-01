@@ -9,4 +9,8 @@ class GameRoundBundle {
     fun getRoundDataList(): List<GameRoundData>{
         return rounds
     }
+
+    fun clearRounds(){
+        rounds.clear()
+    }
 }
